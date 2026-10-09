@@ -1,0 +1,188 @@
+﻿couche;champ;type;description
+perimetre_metropole;nom;object;Nom de la commune
+communes_indicateurs;code_insee;object;Code INSEE de la commune
+communes_indicateurs;nom;object;Nom de la commune
+communes_indicateurs;conso_1121_ha;float64;Consommation d'ENAF 2011-2021, toutes destinations (ha)
+communes_indicateurs;c1121_hab_ha;float64;Consommation d'ENAF 2011-2021 pour habitat (ha)
+communes_indicateurs;c1121_act_ha;float64;Consommation d'ENAF 2011-2021 pour activité économique (ha)
+communes_indicateurs;c1121_mix_ha;float64;Consommation d'ENAF 2011-2021 pour mixte (ha)
+communes_indicateurs;c1121_inf_ha;float64;Consommation d'ENAF 2011-2021 pour infrastructures (ha)
+communes_indicateurs;c1121_inc_ha;float64;Consommation d'ENAF 2011-2021 pour destination inconnue (ha)
+communes_indicateurs;conso_2125_ha;float64;Consommation d'ENAF 2021-2025, toutes destinations (ha)
+communes_indicateurs;c2125_hab_ha;float64;Consommation d'ENAF 2021-2025 pour habitat (ha)
+communes_indicateurs;c2125_act_ha;float64;Consommation d'ENAF 2021-2025 pour activité économique (ha)
+communes_indicateurs;c2125_mix_ha;float64;Consommation d'ENAF 2021-2025 pour mixte (ha)
+communes_indicateurs;c2125_inf_ha;float64;Consommation d'ENAF 2021-2025 pour infrastructures (ha)
+communes_indicateurs;c2125_inc_ha;float64;Consommation d'ENAF 2021-2025 pour destination inconnue (ha)
+communes_indicateurs;conso_1125_ha;float64;Consommation d'ENAF 2011-2025, toutes destinations (ha)
+communes_indicateurs;c1125_hab_ha;float64;Consommation d'ENAF 2011-2025 pour habitat (ha)
+communes_indicateurs;c1125_act_ha;float64;Consommation d'ENAF 2011-2025 pour activité économique (ha)
+communes_indicateurs;c1125_mix_ha;float64;Consommation d'ENAF 2011-2025 pour mixte (ha)
+communes_indicateurs;c1125_inf_ha;float64;Consommation d'ENAF 2011-2025 pour infrastructures (ha)
+communes_indicateurs;c1125_inc_ha;float64;Consommation d'ENAF 2011-2025 pour destination inconnue (ha)
+communes_indicateurs;moy_an_1121_ha;float64;Consommation annuelle moyenne 2011-2021 (ha/an)
+communes_indicateurs;moy_an_2125_ha;float64;Consommation annuelle moyenne 2021-2025 (ha/an)
+communes_indicateurs;evol_rythme_pct;float64;Évolution du rythme annuel 2021-2025 / 2011-2021 (%)
+communes_indicateurs;enveloppe_zan_ha;float64;Enveloppe indicative 2021-2031 = 50 % de la consommation 2011-2021 (ha)
+communes_indicateurs;part_enveloppe_pct;float64;Part de l'enveloppe indicative consommée au 1er janvier 2025 (%)
+communes_indicateurs;projection_2131_ha;float64;Consommation 2021-2031 projetée au rythme 2021-2025 (ha)
+communes_indicateurs;surface_com_ha;float64;Surface de la commune (Cerema, ha)
+communes_indicateurs;part_surface_conso_1125_pct;float64;Part de la surface communale consommée 2011-2025 (%)
+communes_indicateurs;pop_2011;float64;Population 2011 (INSEE)
+communes_indicateurs;pop_2022;float64;Population 2022 (INSEE)
+communes_indicateurs;men_2011;float64;Ménages 2011 (INSEE)
+communes_indicateurs;men_2022;float64;Ménages 2022 (INSEE)
+communes_indicateurs;emp_2011;float64;Emplois 2011 (INSEE)
+communes_indicateurs;emp_2022;float64;Emplois 2022 (INSEE)
+communes_indicateurs;m2_hab_par_menage_1122;float64;m² d'ENAF consommés pour l'habitat par ménage supplémentaire 2011-2022
+communes_indicateurs;dominante_1121;object;Destination dominante de la consommation 2011-2021 (hab, act, mix, inf, inc)
+communes_indicateurs;classe_effort;object;Classe d'évolution du rythme de consommation (carte C02)
+communes_indicateurs;artif_2019_ha;float64;Surface artificialisée en 2019 (OCS GE, ha)
+communes_indicateurs;artif_2022_ha;float64;Surface artificialisée en 2022 (OCS GE, ha)
+communes_indicateurs;surface_ocs_ha;float64;Surface couverte par l'OCS GE (ha)
+communes_indicateurs;artif_brute_1922_ha;float64;Artificialisation brute 2019-2022 (ha)
+communes_indicateurs;desartif_1922_ha;float64;Désartificialisation 2019-2022 (ha)
+communes_indicateurs;artif_nette_1922_ha;float64;Artificialisation nette 2019-2022 (ha)
+communes_indicateurs;part_artif_2022_pct;float64;Part du territoire artificialisée en 2022 (%)
+communes_indicateurs;ocs22_classe1_ha;float64;OCS GE 2022 - Bâti (ha)
+communes_indicateurs;ocs22_classe2_ha;float64;OCS GE 2022 - Surfaces revêtues ou stabilisées (ha)
+communes_indicateurs;ocs22_classe3_ha;float64;OCS GE 2022 - Espaces verts artificialisés (ha)
+communes_indicateurs;ocs22_classe4_ha;float64;OCS GE 2022 - Espaces agricoles (ha)
+communes_indicateurs;ocs22_classe5_ha;float64;OCS GE 2022 - Prairies, friches, milieux ouverts (ha)
+communes_indicateurs;ocs22_classe6_ha;float64;OCS GE 2022 - Forêts et boisements (ha)
+communes_indicateurs;ocs22_classe7_ha;float64;OCS GE 2022 - Eau, sols nus, carrières (ha)
+communes_indicateurs;zone_A_ha;float64;Surface en zone A (ha)
+communes_indicateurs;zone_AU_ha;float64;Surface en zone AU (ha)
+communes_indicateurs;zone_N_ha;float64;Surface en zone N (ha)
+communes_indicateurs;zone_U_ha;float64;Surface en zone U du PLUi (ha)
+communes_indicateurs;au_non_artif_ha;float64;Surface des zones AU non artificialisée en 2022 (ha)
+communes_indicateurs;au_rpg_ha;float64;Parcelles agricoles RPG 2024 situées en zone AU (ha)
+communes_indicateurs;u_non_artif_ha;float64;Surface non artificialisée en zone U en 2022 (ha)
+communes_centroides;code_insee;object;Code INSEE de la commune
+communes_centroides;nom;object;Nom de la commune
+communes_centroides;conso_1121_ha;float64;Consommation d'ENAF 2011-2021, toutes destinations (ha)
+communes_centroides;c1121_hab_ha;float64;Consommation d'ENAF 2011-2021 pour habitat (ha)
+communes_centroides;c1121_act_ha;float64;Consommation d'ENAF 2011-2021 pour activité économique (ha)
+communes_centroides;c1121_mix_ha;float64;Consommation d'ENAF 2011-2021 pour mixte (ha)
+communes_centroides;c1121_inf_ha;float64;Consommation d'ENAF 2011-2021 pour infrastructures (ha)
+communes_centroides;c1121_inc_ha;float64;Consommation d'ENAF 2011-2021 pour destination inconnue (ha)
+communes_centroides;conso_2125_ha;float64;Consommation d'ENAF 2021-2025, toutes destinations (ha)
+communes_centroides;c2125_hab_ha;float64;Consommation d'ENAF 2021-2025 pour habitat (ha)
+communes_centroides;c2125_act_ha;float64;Consommation d'ENAF 2021-2025 pour activité économique (ha)
+communes_centroides;c2125_mix_ha;float64;Consommation d'ENAF 2021-2025 pour mixte (ha)
+communes_centroides;c2125_inf_ha;float64;Consommation d'ENAF 2021-2025 pour infrastructures (ha)
+communes_centroides;c2125_inc_ha;float64;Consommation d'ENAF 2021-2025 pour destination inconnue (ha)
+communes_centroides;conso_1125_ha;float64;Consommation d'ENAF 2011-2025, toutes destinations (ha)
+communes_centroides;c1125_hab_ha;float64;Consommation d'ENAF 2011-2025 pour habitat (ha)
+communes_centroides;c1125_act_ha;float64;Consommation d'ENAF 2011-2025 pour activité économique (ha)
+communes_centroides;c1125_mix_ha;float64;Consommation d'ENAF 2011-2025 pour mixte (ha)
+communes_centroides;c1125_inf_ha;float64;Consommation d'ENAF 2011-2025 pour infrastructures (ha)
+communes_centroides;c1125_inc_ha;float64;Consommation d'ENAF 2011-2025 pour destination inconnue (ha)
+communes_centroides;moy_an_1121_ha;float64;Consommation annuelle moyenne 2011-2021 (ha/an)
+communes_centroides;moy_an_2125_ha;float64;Consommation annuelle moyenne 2021-2025 (ha/an)
+communes_centroides;evol_rythme_pct;float64;Évolution du rythme annuel 2021-2025 / 2011-2021 (%)
+communes_centroides;enveloppe_zan_ha;float64;Enveloppe indicative 2021-2031 = 50 % de la consommation 2011-2021 (ha)
+communes_centroides;part_enveloppe_pct;float64;Part de l'enveloppe indicative consommée au 1er janvier 2025 (%)
+communes_centroides;projection_2131_ha;float64;Consommation 2021-2031 projetée au rythme 2021-2025 (ha)
+communes_centroides;surface_com_ha;float64;Surface de la commune (Cerema, ha)
+communes_centroides;part_surface_conso_1125_pct;float64;Part de la surface communale consommée 2011-2025 (%)
+communes_centroides;pop_2011;float64;Population 2011 (INSEE)
+communes_centroides;pop_2022;float64;Population 2022 (INSEE)
+communes_centroides;men_2011;float64;Ménages 2011 (INSEE)
+communes_centroides;men_2022;float64;Ménages 2022 (INSEE)
+communes_centroides;emp_2011;float64;Emplois 2011 (INSEE)
+communes_centroides;emp_2022;float64;Emplois 2022 (INSEE)
+communes_centroides;m2_hab_par_menage_1122;float64;m² d'ENAF consommés pour l'habitat par ménage supplémentaire 2011-2022
+communes_centroides;dominante_1121;object;Destination dominante de la consommation 2011-2021 (hab, act, mix, inf, inc)
+communes_centroides;classe_effort;object;Classe d'évolution du rythme de consommation (carte C02)
+communes_centroides;artif_2019_ha;float64;Surface artificialisée en 2019 (OCS GE, ha)
+communes_centroides;artif_2022_ha;float64;Surface artificialisée en 2022 (OCS GE, ha)
+communes_centroides;surface_ocs_ha;float64;Surface couverte par l'OCS GE (ha)
+communes_centroides;artif_brute_1922_ha;float64;Artificialisation brute 2019-2022 (ha)
+communes_centroides;desartif_1922_ha;float64;Désartificialisation 2019-2022 (ha)
+communes_centroides;artif_nette_1922_ha;float64;Artificialisation nette 2019-2022 (ha)
+communes_centroides;part_artif_2022_pct;float64;Part du territoire artificialisée en 2022 (%)
+communes_centroides;ocs22_classe1_ha;float64;OCS GE 2022 - Bâti (ha)
+communes_centroides;ocs22_classe2_ha;float64;OCS GE 2022 - Surfaces revêtues ou stabilisées (ha)
+communes_centroides;ocs22_classe3_ha;float64;OCS GE 2022 - Espaces verts artificialisés (ha)
+communes_centroides;ocs22_classe4_ha;float64;OCS GE 2022 - Espaces agricoles (ha)
+communes_centroides;ocs22_classe5_ha;float64;OCS GE 2022 - Prairies, friches, milieux ouverts (ha)
+communes_centroides;ocs22_classe6_ha;float64;OCS GE 2022 - Forêts et boisements (ha)
+communes_centroides;ocs22_classe7_ha;float64;OCS GE 2022 - Eau, sols nus, carrières (ha)
+communes_centroides;zone_A_ha;float64;Surface en zone A (ha)
+communes_centroides;zone_AU_ha;float64;Surface en zone AU (ha)
+communes_centroides;zone_N_ha;float64;Surface en zone N (ha)
+communes_centroides;zone_U_ha;float64;Surface en zone U du PLUi (ha)
+communes_centroides;au_non_artif_ha;float64;Surface des zones AU non artificialisée en 2022 (ha)
+communes_centroides;au_rpg_ha;float64;Parcelles agricoles RPG 2024 situées en zone AU (ha)
+communes_centroides;u_non_artif_ha;float64;Surface non artificialisée en zone U en 2022 (ha)
+plui_zonage_qualifie;libelle;object;Code de la zone du PLUi
+plui_zonage_qualifie;libelong;object;Libellé long de la zone
+plui_zonage_qualifie;typezone;object;Type de zone CNIG (U, AUc, AUs, A, N)
+plui_zonage_qualifie;idurba;object;Identifiant du document d'urbanisme
+plui_zonage_qualifie;urlfic;object;Lien vers le règlement de la zone
+plui_zonage_qualifie;code_insee;object;Code INSEE de la commune
+plui_zonage_qualifie;famille;object;Famille de zone simplifiée
+plui_zonage_qualifie;ouverture;object;Zone AU ouverte (1AU) ou fermée (2AU)
+plui_zonage_qualifie;vocation;object;Vocation de la zone AU
+plui_zonage_qualifie;surface_ha;float64;Surface (ha)
+plui_zonage_qualifie;non_artif_ha;float64;Surface non artificialisée en 2022 (ha)
+plui_zonage_qualifie;artif_ha;float64;Surface artificialisée en 2022 (ha)
+plui_zonage_qualifie;agri_ocs_ha;float64;Surface agricole OCS GE 2022 (ha)
+plui_zonage_qualifie;rpg_ha;float64;Surface RPG 2024 (ha)
+plui_zonage_qualifie;part_non_artif_pct;float64;Part non artificialisée (%)
+plui_zones_au;libelle;object;Code de la zone du PLUi
+plui_zones_au;libelong;object;Libellé long de la zone
+plui_zones_au;typezone;object;Type de zone CNIG (U, AUc, AUs, A, N)
+plui_zones_au;idurba;object;Identifiant du document d'urbanisme
+plui_zones_au;urlfic;object;Lien vers le règlement de la zone
+plui_zones_au;code_insee;object;Code INSEE de la commune
+plui_zones_au;famille;object;Famille de zone simplifiée
+plui_zones_au;ouverture;object;Zone AU ouverte (1AU) ou fermée (2AU)
+plui_zones_au;vocation;object;Vocation de la zone AU
+plui_zones_au;surface_ha;float64;Surface (ha)
+plui_zones_au;non_artif_ha;float64;Surface non artificialisée en 2022 (ha)
+plui_zones_au;artif_ha;float64;Surface artificialisée en 2022 (ha)
+plui_zones_au;agri_ocs_ha;float64;Surface agricole OCS GE 2022 (ha)
+plui_zones_au;rpg_ha;float64;Surface RPG 2024 (ha)
+plui_zones_au;part_non_artif_pct;float64;Part non artificialisée (%)
+ocsge_flux_2019_2022;code_insee;object;Code INSEE de la commune
+ocsge_flux_2019_2022;cs_2019;object;Couverture du sol 2019 (nomenclature OCS GE)
+ocsge_flux_2019_2022;us_2019;object;Usage du sol 2019
+ocsge_flux_2019_2022;cs_2022;object;Couverture du sol 2022
+ocsge_flux_2019_2022;us_2022;object;Usage du sol 2022
+ocsge_flux_2019_2022;classe_2019;int64;Grande classe d'occupation 2019 (1-7)
+ocsge_flux_2019_2022;classe_2022;int64;Grande classe d'occupation 2022 (1-7)
+ocsge_flux_2019_2022;type_flux;object;Artificialisation ou désartificialisation
+ocsge_flux_2019_2022;surface_ha;float64;Surface (ha)
+gisements_densification;code_insee;object;Code INSEE de la commune
+gisements_densification;commune;object;Nom de la commune
+gisements_densification;idu;object;Identifiant cadastral de la parcelle
+gisements_densification;zone_plui;object;Zone du PLUi (majoritaire)
+gisements_densification;type_gisement;object;Type de gisement foncier
+gisements_densification;surface_m2;float64;Surface de la parcelle (m²)
+gisements_densification;surface_libre_m2;float64;Surface libre constructible (m²)
+gisements_densification;emprise_bati_m2;float64;Emprise bâtie (m²)
+gisements_densification;coef_emprise;float64;Coefficient d'emprise au sol
+gisements_densification;facade_voie_m;float64;Longueur de contact avec la voie publique (m)
+gisements_densification;part_boisee;float64;Part boisée selon l'OCS GE (0-1)
+gisements_densification;dans_oap;bool;Situé dans une OAP (0/1)
+gisements_densification;vigilance;object;Point de vigilance
+gisements_densification;logements_bruts;int64;Potentiel brut de logements
+gisements_densification;taux_mobilisation;float64;Taux de mobilisation à 10 ans (hypothèse)
+gisements_densification;logements_mobilisables;float64;Logements mobilisables à 10 ans
+contraintes_prescriptions;typepsc;object;Type de prescription CNIG
+contraintes_prescriptions;stypepsc;object;Sous-type de prescription
+contraintes_prescriptions;libelle;object;Code de la zone du PLUi
+cadastre_parcelles_etude;idu;object;Identifiant cadastral de la parcelle
+cadastre_parcelles_etude;section;object;Section cadastrale
+cadastre_parcelles_etude;numero;object;Numéro de parcelle
+cadastre_parcelles_etude;contenance;float64;Contenance cadastrale (m²)
+cadastre_parcelles_etude;code_insee;object;Code INSEE de la commune
+bdtopo_batiments_etude;cleabs;object;Identifiant BD TOPO
+bdtopo_batiments_etude;nature;object;Nature du bâtiment
+bdtopo_batiments_etude;usage_1;object;Usage principal du bâtiment
+bdtopo_batiments_etude;construction_legere;bool;Construction légère (1) ou non (0)
+bdtopo_batiments_etude;nombre_de_logements;float64;Nombre de logements
+bdtopo_batiments_etude;hauteur;float64;Hauteur du bâtiment (m)
+bdtopo_batiments_etude;code_insee;object;Code INSEE de la commune
