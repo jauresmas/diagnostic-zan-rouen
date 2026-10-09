@@ -4,7 +4,7 @@ Ce projet est une chaîne de traitement SIG reproductible. Elle mesure la consom
 
 Toutes les données sont ouvertes. Chaque carte, tableau et document est produit par un script, sans aucune manipulation manuelle.
 
-> **Carte interactive :** [ouvrir la carte web](https://Jauresmas.github.io/diagnostic-zan-rouen/)
+> **Carte interactive :** [ouvrir la carte web](https://jauresmas.github.io/diagnostic-zan-rouen/)
 > **Livrables :** [`livrables/`](livrables/), avec le [bordereau de livraison](livrables/01_Documents/00_Bordereau_de_livraison.pdf) et la [note méthodologique](livrables/01_Documents/01_Note_methodologique.pdf)
 
 ![Consommation d'ENAF 2011-2021](livrables/03_Planches_cartographiques/C01_Consommation_ENAF_2011-2021.png)
