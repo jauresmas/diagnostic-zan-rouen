@@ -18,8 +18,8 @@
       </Option>
       <Option name="component_description" value="Ouverture (2/2) : dilatation" type="QString"/>
       <Option name="component_height" value="30" type="double"/>
-      <Option name="component_pos_x" value="560" type="double"/>
-      <Option name="component_pos_y" value="670" type="double"/>
+      <Option name="component_pos_x" value="500" type="double"/>
+      <Option name="component_pos_y" value="700" type="double"/>
       <Option name="component_width" value="200" type="double"/>
       <Option name="dependencies"/>
       <Option name="id" value="dilatation" type="QString"/>
@@ -77,8 +77,8 @@
       </Option>
       <Option name="component_description" value="Ouverture (1/2) : érosion" type="QString"/>
       <Option name="component_height" value="30" type="double"/>
-      <Option name="component_pos_x" value="560" type="double"/>
-      <Option name="component_pos_y" value="570" type="double"/>
+      <Option name="component_pos_x" value="500" type="double"/>
+      <Option name="component_pos_y" value="610" type="double"/>
       <Option name="component_width" value="200" type="double"/>
       <Option name="dependencies"/>
       <Option name="id" value="erosion" type="QString"/>
@@ -136,8 +136,8 @@
       </Option>
       <Option name="component_description" value="Garder les lots assez grands" type="QString"/>
       <Option name="component_height" value="30" type="double"/>
-      <Option name="component_pos_x" value="360" type="double"/>
-      <Option name="component_pos_y" value="970" type="double"/>
+      <Option name="component_pos_x" value="500" type="double"/>
+      <Option name="component_pos_y" value="1240" type="double"/>
       <Option name="component_width" value="200" type="double"/>
       <Option name="dependencies"/>
       <Option name="id" value="filtre" type="QString"/>
@@ -155,10 +155,10 @@
             <Option name="outputs_collapsed" value="true" type="bool"/>
             <Option name="parameters_collapsed" value="true" type="bool"/>
           </Option>
-          <Option name="component_description" value="" type="QString"/>
+          <Option name="component_description" value="Espaces libres constructibles" type="QString"/>
           <Option name="component_height" value="30" type="double"/>
-          <Option name="component_pos_x" value="520" type="double"/>
-          <Option name="component_pos_y" value="1030" type="double"/>
+          <Option name="component_pos_x" value="760" type="double"/>
+          <Option name="component_pos_y" value="1285" type="double"/>
           <Option name="component_width" value="200" type="double"/>
           <Option name="default_value" type="invalid"/>
           <Option name="mandatory" value="false" type="bool"/>
@@ -203,8 +203,8 @@
       </Option>
       <Option name="component_description" value="Séparer les espaces libres" type="QString"/>
       <Option name="component_height" value="30" type="double"/>
-      <Option name="component_pos_x" value="360" type="double"/>
-      <Option name="component_pos_y" value="770" type="double"/>
+      <Option name="component_pos_x" value="500" type="double"/>
+      <Option name="component_pos_y" value="970" type="double"/>
       <Option name="component_width" value="200" type="double"/>
       <Option name="dependencies"/>
       <Option name="id" value="morceaux" type="QString"/>
@@ -238,8 +238,8 @@
       </Option>
       <Option name="component_description" value="Parcelles découpées par les zones U" type="QString"/>
       <Option name="component_height" value="30" type="double"/>
-      <Option name="component_pos_x" value="260" type="double"/>
-      <Option name="component_pos_y" value="270" type="double"/>
+      <Option name="component_pos_x" value="300" type="double"/>
+      <Option name="component_pos_y" value="250" type="double"/>
       <Option name="component_width" value="200" type="double"/>
       <Option name="dependencies"/>
       <Option name="id" value="parcelles_u" type="QString"/>
@@ -279,8 +279,8 @@
       </Option>
       <Option name="component_description" value="Recaler sur l'espace libre" type="QString"/>
       <Option name="component_height" value="30" type="double"/>
-      <Option name="component_pos_x" value="360" type="double"/>
-      <Option name="component_pos_y" value="670" type="double"/>
+      <Option name="component_pos_x" value="500" type="double"/>
+      <Option name="component_pos_y" value="880" type="double"/>
       <Option name="component_width" value="200" type="double"/>
       <Option name="dependencies"/>
       <Option name="id" value="recalage" type="QString"/>
@@ -321,8 +321,8 @@
       </Option>
       <Option name="component_description" value="Réparer les géométries" type="QString"/>
       <Option name="component_height" value="30" type="double"/>
-      <Option name="component_pos_x" value="760" type="double"/>
-      <Option name="component_pos_y" value="470" type="double"/>
+      <Option name="component_pos_x" value="500" type="double"/>
+      <Option name="component_pos_y" value="520" type="double"/>
       <Option name="component_width" value="200" type="double"/>
       <Option name="dependencies"/>
       <Option name="id" value="reparation_1" type="QString"/>
@@ -356,8 +356,8 @@
       </Option>
       <Option name="component_description" value="Réparer les géométries" type="QString"/>
       <Option name="component_height" value="30" type="double"/>
-      <Option name="component_pos_x" value="760" type="double"/>
-      <Option name="component_pos_y" value="670" type="double"/>
+      <Option name="component_pos_x" value="500" type="double"/>
+      <Option name="component_pos_y" value="790" type="double"/>
       <Option name="component_width" value="200" type="double"/>
       <Option name="dependencies"/>
       <Option name="id" value="reparation_2" type="QString"/>
@@ -391,8 +391,8 @@
       </Option>
       <Option name="component_description" value="Retirer le bâti et son recul" type="QString"/>
       <Option name="component_height" value="30" type="double"/>
-      <Option name="component_pos_x" value="360" type="double"/>
-      <Option name="component_pos_y" value="380" type="double"/>
+      <Option name="component_pos_x" value="500" type="double"/>
+      <Option name="component_pos_y" value="340" type="double"/>
       <Option name="component_width" value="200" type="double"/>
       <Option name="dependencies"/>
       <Option name="id" value="sans_bati" type="QString"/>
@@ -433,8 +433,8 @@
       </Option>
       <Option name="component_description" value="Retirer les prescriptions excluantes" type="QString"/>
       <Option name="component_height" value="30" type="double"/>
-      <Option name="component_pos_x" value="560" type="double"/>
-      <Option name="component_pos_y" value="470" type="double"/>
+      <Option name="component_pos_x" value="500" type="double"/>
+      <Option name="component_pos_y" value="430" type="double"/>
       <Option name="component_width" value="200" type="double"/>
       <Option name="dependencies"/>
       <Option name="id" value="sans_contraintes" type="QString"/>
@@ -474,8 +474,8 @@
       </Option>
       <Option name="component_description" value="Supprimer le champ fid dupliqué" type="QString"/>
       <Option name="component_height" value="30" type="double"/>
-      <Option name="component_pos_x" value="560" type="double"/>
-      <Option name="component_pos_y" value="770" type="double"/>
+      <Option name="component_pos_x" value="500" type="double"/>
+      <Option name="component_pos_y" value="1060" type="double"/>
       <Option name="component_width" value="200" type="double"/>
       <Option name="dependencies"/>
       <Option name="id" value="sans_fid" type="QString"/>
@@ -517,8 +517,8 @@
       </Option>
       <Option name="component_description" value="Calculer la surface (m²)" type="QString"/>
       <Option name="component_height" value="30" type="double"/>
-      <Option name="component_pos_x" value="360" type="double"/>
-      <Option name="component_pos_y" value="870" type="double"/>
+      <Option name="component_pos_x" value="500" type="double"/>
+      <Option name="component_pos_y" value="1150" type="double"/>
       <Option name="component_width" value="200" type="double"/>
       <Option name="dependencies"/>
       <Option name="id" value="surface" type="QString"/>
@@ -582,8 +582,8 @@
       </Option>
       <Option name="component_description" value="Recul autour du bâti" type="QString"/>
       <Option name="component_height" value="30" type="double"/>
-      <Option name="component_pos_x" value="460" type="double"/>
-      <Option name="component_pos_y" value="170" type="double"/>
+      <Option name="component_pos_x" value="700" type="double"/>
+      <Option name="component_pos_y" value="150" type="double"/>
       <Option name="component_width" value="200" type="double"/>
       <Option name="dependencies"/>
       <Option name="id" value="tampon_bati" type="QString"/>
@@ -634,8 +634,8 @@
       </Option>
       <Option name="component_description" value="Zones U à dominante habitat" type="QString"/>
       <Option name="component_height" value="30" type="double"/>
-      <Option name="component_pos_x" value="60" type="double"/>
-      <Option name="component_pos_y" value="170" type="double"/>
+      <Option name="component_pos_x" value="100" type="double"/>
+      <Option name="component_pos_y" value="150" type="double"/>
       <Option name="component_width" value="200" type="double"/>
       <Option name="dependencies"/>
       <Option name="id" value="zones_u" type="QString"/>
@@ -700,12 +700,12 @@
       <Option name="name" value="contraintes" type="QString"/>
       <Option name="parameter_type" value="vector" type="QString"/>
     </Option>
-    <Option name="filtre:Espaces libres constructibles" type="Map">
+    <Option name="espaces_libres_constructibles" type="Map">
       <Option name="create_by_default" value="true" type="bool"/>
       <Option name="data_type" value="-1" type="int"/>
       <Option name="default" type="invalid"/>
       <Option name="defaultGui" type="invalid"/>
-      <Option name="description" value="" type="QString"/>
+      <Option name="description" value="Espaces libres constructibles" type="QString"/>
       <Option name="flags" value="0" type="int"/>
       <Option name="help" value="" type="QString"/>
       <Option name="metadata" type="Map">
@@ -713,7 +713,7 @@
         <Option name="_modelChildOutputName" value="Espaces libres constructibles" type="QString"/>
         <Option name="_modelChildProvider" value="native" type="QString"/>
       </Option>
-      <Option name="name" value="filtre:Espaces libres constructibles" type="QString"/>
+      <Option name="name" value="espaces_libres_constructibles" type="QString"/>
       <Option name="parameter_type" value="sink" type="QString"/>
       <Option name="supports_append" value="false" type="bool"/>
       <Option name="supports_non_file_outputs" value="true" type="bool"/>
@@ -800,7 +800,7 @@
       </Option>
       <Option name="component_description" value="" type="QString"/>
       <Option name="component_height" value="30" type="double"/>
-      <Option name="component_pos_x" value="460" type="double"/>
+      <Option name="component_pos_x" value="700" type="double"/>
       <Option name="component_pos_y" value="50" type="double"/>
       <Option name="component_width" value="200" type="double"/>
       <Option name="name" value="batiments" type="QString"/>
@@ -821,7 +821,7 @@
       </Option>
       <Option name="component_description" value="" type="QString"/>
       <Option name="component_height" value="30" type="double"/>
-      <Option name="component_pos_x" value="660" type="double"/>
+      <Option name="component_pos_x" value="900" type="double"/>
       <Option name="component_pos_y" value="50" type="double"/>
       <Option name="component_width" value="200" type="double"/>
       <Option name="name" value="contraintes" type="QString"/>
@@ -842,7 +842,7 @@
       </Option>
       <Option name="component_description" value="" type="QString"/>
       <Option name="component_height" value="30" type="double"/>
-      <Option name="component_pos_x" value="860" type="double"/>
+      <Option name="component_pos_x" value="1150" type="double"/>
       <Option name="component_pos_y" value="110" type="double"/>
       <Option name="component_width" value="200" type="double"/>
       <Option name="name" value="largeur_lot" type="QString"/>
@@ -863,7 +863,7 @@
       </Option>
       <Option name="component_description" value="" type="QString"/>
       <Option name="component_height" value="30" type="double"/>
-      <Option name="component_pos_x" value="260" type="double"/>
+      <Option name="component_pos_x" value="300" type="double"/>
       <Option name="component_pos_y" value="50" type="double"/>
       <Option name="component_width" value="200" type="double"/>
       <Option name="name" value="parcelles" type="QString"/>
@@ -884,7 +884,7 @@
       </Option>
       <Option name="component_description" value="" type="QString"/>
       <Option name="component_height" value="30" type="double"/>
-      <Option name="component_pos_x" value="860" type="double"/>
+      <Option name="component_pos_x" value="1150" type="double"/>
       <Option name="component_pos_y" value="50" type="double"/>
       <Option name="component_width" value="200" type="double"/>
       <Option name="name" value="recul_bati" type="QString"/>
@@ -905,7 +905,7 @@
       </Option>
       <Option name="component_description" value="" type="QString"/>
       <Option name="component_height" value="30" type="double"/>
-      <Option name="component_pos_x" value="860" type="double"/>
+      <Option name="component_pos_x" value="1150" type="double"/>
       <Option name="component_pos_y" value="170" type="double"/>
       <Option name="component_width" value="200" type="double"/>
       <Option name="name" value="surface_min" type="QString"/>
@@ -926,7 +926,7 @@
       </Option>
       <Option name="component_description" value="" type="QString"/>
       <Option name="component_height" value="30" type="double"/>
-      <Option name="component_pos_x" value="60" type="double"/>
+      <Option name="component_pos_x" value="100" type="double"/>
       <Option name="component_pos_y" value="50" type="double"/>
       <Option name="component_width" value="200" type="double"/>
       <Option name="name" value="zonage" type="QString"/>

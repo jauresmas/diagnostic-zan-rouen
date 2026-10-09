@@ -53,9 +53,10 @@ def etape(modele, identifiant, algo, description, x, y, sources, sorties=None):
         resultats = {}
         for nom, sortie in sorties.items():
             o = QgsProcessingModelOutput(nom)
+            o.setDescription(nom)
             o.setChildOutputName(sortie)
             o.setChildId(identifiant)
-            o.setPosition(QPointF(x + 160, y + 60))
+            o.setPosition(QPointF(x + 260, y + 45))
             resultats[nom] = o
         enfant.setModelOutputs(resultats)
     modele.addChildAlgorithm(enfant)
@@ -105,79 +106,79 @@ def modele_bilan_secteur():
 def modele_espaces_libres():
     m = QgsProcessingModelAlgorithm("ZAN - Espaces libres constructibles en zone U", GROUPE)
     entrees = [
-        ("zonage", "Zonage du PLUi", "plui_zonage_qualifie", 60),
-        ("parcelles", "Parcelles cadastrales", "cadastre_parcelles_etude", 260),
-        ("batiments", "Bâtiments", "bdtopo_batiments_etude", 460),
-        ("contraintes", "Prescriptions excluantes", "contraintes_prescriptions", 660),
+        ("zonage", "Zonage du PLUi", "plui_zonage_qualifie", 100),
+        ("parcelles", "Parcelles cadastrales", "cadastre_parcelles_etude", 300),
+        ("batiments", "Bâtiments", "bdtopo_batiments_etude", 700),
+        ("contraintes", "Prescriptions excluantes", "contraintes_prescriptions", 900),
     ]
     for nom, lib, defaut, x in entrees:
         parametre(m, QgsProcessingParameterVectorLayer(nom, lib, [QgsProcessing.TypeVectorPolygon],
                                                        defaultValue=couche_defaut(defaut)), x, 50)
-    for nom, lib, val, x in (("recul_bati", "Recul autour du bâti (m)", 5, 860),
-                             ("largeur_lot", "Largeur minimale d'un lot (m)", 15, 860),
-                             ("surface_min", "Surface minimale d'un lot (m²)", 400, 860)):
+    for nom, lib, val, x in (("recul_bati", "Recul autour du bâti (m)", 5, 1150),
+                             ("largeur_lot", "Largeur minimale d'un lot (m)", 15, 1150),
+                             ("surface_min", "Surface minimale d'un lot (m²)", 400, 1150)):
         parametre(m, QgsProcessingParameterNumber(nom, lib, QgsProcessingParameterNumber.Double,
                                                   defaultValue=val, minValue=0),
                   x, {"recul_bati": 50, "largeur_lot": 110, "surface_min": 170}[nom])
 
-    etape(m, "zones_u", "native:extractbyexpression", "Zones U à dominante habitat", 60, 170, {
+    etape(m, "zones_u", "native:extractbyexpression", "Zones U à dominante habitat", 100, 150, {
         "INPUT": Source.fromModelParameter("zonage"),
         "EXPRESSION": Source.fromStaticValue(
             "\"famille\" = 'U' AND regexp_match(\"libelle\", '^(UA|UB|UC|UD|UR)') "
             "AND left(\"libelle\", 3) <> 'URX'"),
     })
-    etape(m, "parcelles_u", "native:clip", "Parcelles découpées par les zones U", 260, 270, {
+    etape(m, "parcelles_u", "native:clip", "Parcelles découpées par les zones U", 300, 250, {
         "INPUT": Source.fromModelParameter("parcelles"),
         "OVERLAY": sortie_de("zones_u"),
     })
-    etape(m, "tampon_bati", "native:buffer", "Recul autour du bâti", 460, 170, {
+    etape(m, "tampon_bati", "native:buffer", "Recul autour du bâti", 700, 150, {
         "INPUT": Source.fromModelParameter("batiments"),
         "DISTANCE": Source.fromModelParameter("recul_bati"),
         "SEGMENTS": Source.fromStaticValue(5),
         # pas de fusion : la différence s'appuie alors sur l'index spatial (bien plus rapide)
         "DISSOLVE": Source.fromStaticValue(False),
     })
-    etape(m, "sans_bati", "native:difference", "Retirer le bâti et son recul", 360, 380, {
+    etape(m, "sans_bati", "native:difference", "Retirer le bâti et son recul", 500, 340, {
         "INPUT": sortie_de("parcelles_u"),
         "OVERLAY": sortie_de("tampon_bati"),
     })
-    etape(m, "sans_contraintes", "native:difference", "Retirer les prescriptions excluantes", 560, 470, {
+    etape(m, "sans_contraintes", "native:difference", "Retirer les prescriptions excluantes", 500, 430, {
         "INPUT": sortie_de("sans_bati"),
         "OVERLAY": Source.fromModelParameter("contraintes"),
     })
-    etape(m, "reparation_1", "native:fixgeometries", "Réparer les géométries", 760, 470, {
+    etape(m, "reparation_1", "native:fixgeometries", "Réparer les géométries", 500, 520, {
         "INPUT": sortie_de("sans_contraintes"),
     })
-    etape(m, "erosion", "native:buffer", "Ouverture (1/2) : érosion", 560, 570, {
+    etape(m, "erosion", "native:buffer", "Ouverture (1/2) : érosion", 500, 610, {
         "INPUT": sortie_de("reparation_1"),
         "DISTANCE": Source.fromExpression("-@largeur_lot / 2"),
         "SEGMENTS": Source.fromStaticValue(5),
         "JOIN_STYLE": Source.fromStaticValue(1),
         "DISSOLVE": Source.fromStaticValue(False),
     })
-    etape(m, "dilatation", "native:buffer", "Ouverture (2/2) : dilatation", 560, 670, {
+    etape(m, "dilatation", "native:buffer", "Ouverture (2/2) : dilatation", 500, 700, {
         "INPUT": sortie_de("erosion"),
         "DISTANCE": Source.fromExpression("@largeur_lot / 2"),
         "SEGMENTS": Source.fromStaticValue(5),
         "JOIN_STYLE": Source.fromStaticValue(1),
         "DISSOLVE": Source.fromStaticValue(False),
     })
-    etape(m, "reparation_2", "native:fixgeometries", "Réparer les géométries", 760, 670, {
+    etape(m, "reparation_2", "native:fixgeometries", "Réparer les géométries", 500, 790, {
         "INPUT": sortie_de("dilatation"),
     })
-    etape(m, "recalage", "native:clip", "Recaler sur l'espace libre", 360, 670, {
+    etape(m, "recalage", "native:clip", "Recaler sur l'espace libre", 500, 880, {
         "INPUT": sortie_de("reparation_2"),
         "OVERLAY": sortie_de("reparation_1"),
     })
-    etape(m, "morceaux", "native:multiparttosingleparts", "Séparer les espaces libres", 360, 770, {
+    etape(m, "morceaux", "native:multiparttosingleparts", "Séparer les espaces libres", 500, 970, {
         "INPUT": sortie_de("recalage"),
     })
     # la séparation duplique le champ fid hérité du GeoPackage : à supprimer avant écriture
-    etape(m, "sans_fid", "native:deletecolumn", "Supprimer le champ fid dupliqué", 560, 770, {
+    etape(m, "sans_fid", "native:deletecolumn", "Supprimer le champ fid dupliqué", 500, 1060, {
         "INPUT": sortie_de("morceaux"),
         "COLUMN": Source.fromStaticValue(["fid"]),
     })
-    etape(m, "surface", "native:fieldcalculator", "Calculer la surface (m²)", 360, 870, {
+    etape(m, "surface", "native:fieldcalculator", "Calculer la surface (m²)", 500, 1150, {
         "INPUT": sortie_de("sans_fid"),
         "FIELD_NAME": Source.fromStaticValue("surface_libre_m2"),
         "FIELD_TYPE": Source.fromStaticValue(0),
@@ -185,7 +186,7 @@ def modele_espaces_libres():
         "FIELD_PRECISION": Source.fromStaticValue(0),
         "FORMULA": Source.fromStaticValue("round($area, 0)"),
     })
-    etape(m, "filtre", "native:extractbyexpression", "Garder les lots assez grands", 360, 970, {
+    etape(m, "filtre", "native:extractbyexpression", "Garder les lots assez grands", 500, 1240, {
         "INPUT": sortie_de("surface"),
         "EXPRESSION": Source.fromExpression(
             "'\"surface_libre_m2\" >= ' || to_string(@surface_min)"),

@@ -2,7 +2,10 @@
 
 Ce projet est une chaîne de traitement SIG reproductible. Elle mesure la consommation d'espaces naturels, agricoles et forestiers (ENAF) et l'artificialisation des sols, puis les confronte au PLUi de la Métropole Rouen Normandie dans la perspective du zéro artificialisation nette (ZAN).
 
-Toutes les données sont ouvertes. Chaque carte, tableau et document est produit par un script, sans aucune manipulation manuelle.
+Toutes les données sont ouvertes. Le travail est livré sous deux formes complémentaires :
+
+- **une chaîne de scripts Python** qui produit les analyses, les planches, l'atlas, le tableur et les documents, et qu'on peut relancer à chaque nouveau millésime ;
+- **un projet QGIS prêt à l'emploi**, avec des mises en page, un atlas communal et deux **modèles du modeleur graphique** pour un usage interactif (voir [Projet QGIS et modeleur graphique](#projet-qgis-et-modeleur-graphique)).
 
 > **Carte interactive :** [ouvrir la carte web](https://jauresmas.github.io/diagnostic-zan-rouen/)
 > **Livrables :** [`livrables/`](livrables/), avec le [bordereau de livraison](livrables/01_Documents/00_Bordereau_de_livraison.pdf) et la [note méthodologique](livrables/01_Documents/01_Note_methodologique.pdf)
@@ -56,9 +59,26 @@ pip install -r requirements.txt
 python scripts/run_all.py         # téléchargement, analyses, livrables (environ 15 min)
 ```
 
-Le **projet QGIS** ([`livrables/02_Donnees_SIG/diagnostic_zan_rouen.qgz`](livrables/02_Donnees_SIG/)) contient 6 thèmes de carte, 4 mises en page A3, un **atlas communal** piloté par les 71 communes et 2 modèles du **modeleur graphique** (bilan d'artificialisation d'un secteur, espaces libres constructibles en zone U). Il se reconstruit en exécutant [`scripts/07_projet_qgis.py`](scripts/07_projet_qgis.py) dans la console Python de QGIS.
-
 Pour **mettre à jour** le diagnostic quand un nouveau millésime Cerema ou IGN est publié, remplacez les URL dans `config.py` puis relancez `run_all.py`. Pour **transposer** le diagnostic à un autre EPCI, changez `EPCI_SIREN`, `DEPARTEMENT`, les millésimes OCS GE et les communes test.
+
+## Projet QGIS et modeleur graphique
+
+Le projet [`livrables/02_Donnees_SIG/diagnostic_zan_rouen.qgz`](livrables/02_Donnees_SIG/) s'ouvre directement dans QGIS 3.34 ou une version plus récente. Les chemins sont relatifs et le projet n'utilise aucun fond de carte externe. Il contient :
+
+- **6 thèmes de carte**, un par planche, avec la symbologie de la charte (cercles proportionnels, conventions CNIG) ;
+- **4 mises en page A3** prêtes à imprimer (consommation d'ENAF, rythme depuis 2021, réservoir des zones AU, densification) ;
+- **un atlas communal A4** piloté par les 71 communes, avec la commune mise en avant, une carte de localisation et des indicateurs calculés par expressions ;
+- **2 modèles du modeleur graphique**, dans la boîte à outils de traitements (rubrique « Modèles du projet ») et en fichiers [`.model3`](livrables/02_Donnees_SIG/modeles/).
+
+**Modèle 1 : bilan d'artificialisation d'un secteur.** Pour un périmètre de projet, un quartier ou un groupe de communes, il donne les hectares artificialisés et désartificialisés entre 2019 et 2022 (OCS GE). C'est un outil d'appui aux agents : sur Bois-Guillaume, il trouve 4,0 ha artificialisés et 1,6 ha désartificialisés, en 1 seconde.
+
+<img src="docs/img/modele_ZAN_bilan_artificialisation_secteur.png" width="60%" alt="Modèle QGIS : bilan d'artificialisation d'un secteur">
+
+**Modèle 2 : espaces libres constructibles en zone U.** C'est la méthode de densification de l'étape 4 traduite en modeleur graphique. Elle sélectionne les zones U à dominante habitat, retire le bâti avec un recul, puis les prescriptions excluantes, applique une ouverture morphologique (érosion puis dilatation) et filtre les lots par surface. Le recul, la largeur minimale du lot et la surface minimale sont des paramètres réglables. Le modèle tourne en environ 10 secondes par commune.
+
+<img src="docs/img/modele_ZAN_espaces_libres_zone_U.png" width="80%" alt="Modèle QGIS : espaces libres constructibles en zone U">
+
+Le projet et les modèles se reconstruisent avec [`scripts/07_projet_qgis.py`](scripts/07_projet_qgis.py) et [`scripts/08_modeles_traitement.py`](scripts/08_modeles_traitement.py), à exécuter dans la console Python de QGIS.
 
 ## Méthodes en bref
 

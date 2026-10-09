@@ -37,10 +37,10 @@
             <Option name="outputs_collapsed" value="true" type="bool"/>
             <Option name="parameters_collapsed" value="true" type="bool"/>
           </Option>
-          <Option name="component_description" value="" type="QString"/>
+          <Option name="component_description" value="Bilan artificialisation (ha)" type="QString"/>
           <Option name="component_height" value="30" type="double"/>
-          <Option name="component_pos_x" value="430" type="double"/>
-          <Option name="component_pos_y" value="460" type="double"/>
+          <Option name="component_pos_x" value="530" type="double"/>
+          <Option name="component_pos_y" value="445" type="double"/>
           <Option name="component_width" value="200" type="double"/>
           <Option name="default_value" type="invalid"/>
           <Option name="mandatory" value="false" type="bool"/>
@@ -158,10 +158,10 @@
             <Option name="outputs_collapsed" value="true" type="bool"/>
             <Option name="parameters_collapsed" value="true" type="bool"/>
           </Option>
-          <Option name="component_description" value="" type="QString"/>
+          <Option name="component_description" value="Flux dans le secteur" type="QString"/>
           <Option name="component_height" value="30" type="double"/>
-          <Option name="component_pos_x" value="430" type="double"/>
-          <Option name="component_pos_y" value="340" type="double"/>
+          <Option name="component_pos_x" value="530" type="double"/>
+          <Option name="component_pos_y" value="325" type="double"/>
           <Option name="component_width" value="200" type="double"/>
           <Option name="default_value" type="invalid"/>
           <Option name="mandatory" value="false" type="bool"/>
@@ -229,12 +229,12 @@
   <Option name="outputGroup" value="" type="QString"/>
   <Option name="outputOrder"/>
   <Option name="parameterDefinitions" type="Map">
-    <Option name="bilan:Bilan artificialisation (ha)" type="Map">
+    <Option name="bilan_artificialisation_ha" type="Map">
       <Option name="create_by_default" value="true" type="bool"/>
       <Option name="data_type" value="-1" type="int"/>
       <Option name="default" type="invalid"/>
       <Option name="defaultGui" type="invalid"/>
-      <Option name="description" value="" type="QString"/>
+      <Option name="description" value="Bilan artificialisation (ha)" type="QString"/>
       <Option name="flags" value="0" type="int"/>
       <Option name="help" value="" type="QString"/>
       <Option name="metadata" type="Map">
@@ -242,7 +242,7 @@
         <Option name="_modelChildOutputName" value="Bilan artificialisation (ha)" type="QString"/>
         <Option name="_modelChildProvider" value="qgis" type="QString"/>
       </Option>
-      <Option name="name" value="bilan:Bilan artificialisation (ha)" type="QString"/>
+      <Option name="name" value="bilan_artificialisation_ha" type="QString"/>
       <Option name="parameter_type" value="sink" type="QString"/>
       <Option name="supports_append" value="false" type="bool"/>
       <Option name="supports_non_file_outputs" value="true" type="bool"/>
@@ -260,6 +260,24 @@
       <Option name="name" value="flux" type="QString"/>
       <Option name="parameter_type" value="vector" type="QString"/>
     </Option>
+    <Option name="flux_dans_le_secteur" type="Map">
+      <Option name="create_by_default" value="true" type="bool"/>
+      <Option name="data_type" value="-1" type="int"/>
+      <Option name="default" type="invalid"/>
+      <Option name="defaultGui" type="invalid"/>
+      <Option name="description" value="Flux dans le secteur" type="QString"/>
+      <Option name="flags" value="0" type="int"/>
+      <Option name="help" value="" type="QString"/>
+      <Option name="metadata" type="Map">
+        <Option name="_modelChildId" value="surface" type="QString"/>
+        <Option name="_modelChildOutputName" value="Flux dans le secteur" type="QString"/>
+        <Option name="_modelChildProvider" value="native" type="QString"/>
+      </Option>
+      <Option name="name" value="flux_dans_le_secteur" type="QString"/>
+      <Option name="parameter_type" value="sink" type="QString"/>
+      <Option name="supports_append" value="true" type="bool"/>
+      <Option name="supports_non_file_outputs" value="true" type="bool"/>
+    </Option>
     <Option name="secteur" type="Map">
       <Option name="data_types" type="List">
         <Option value="2" type="int"/>
@@ -272,24 +290,6 @@
       <Option name="metadata"/>
       <Option name="name" value="secteur" type="QString"/>
       <Option name="parameter_type" value="vector" type="QString"/>
-    </Option>
-    <Option name="surface:Flux dans le secteur" type="Map">
-      <Option name="create_by_default" value="true" type="bool"/>
-      <Option name="data_type" value="-1" type="int"/>
-      <Option name="default" type="invalid"/>
-      <Option name="defaultGui" type="invalid"/>
-      <Option name="description" value="" type="QString"/>
-      <Option name="flags" value="0" type="int"/>
-      <Option name="help" value="" type="QString"/>
-      <Option name="metadata" type="Map">
-        <Option name="_modelChildId" value="surface" type="QString"/>
-        <Option name="_modelChildOutputName" value="Flux dans le secteur" type="QString"/>
-        <Option name="_modelChildProvider" value="native" type="QString"/>
-      </Option>
-      <Option name="name" value="surface:Flux dans le secteur" type="QString"/>
-      <Option name="parameter_type" value="sink" type="QString"/>
-      <Option name="supports_append" value="true" type="bool"/>
-      <Option name="supports_non_file_outputs" value="true" type="bool"/>
     </Option>
   </Option>
   <Option name="parameterOrder"/>
