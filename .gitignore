@@ -4,7 +4,7 @@ __pycache__/
 *.pyc
 
 # Données sources et intermédiaires (re-téléchargées par scripts/00_telecharger_donnees.py)
-data/
+/data/
 
 # Fichiers temporaires
 *.part
@@ -15,7 +15,7 @@ Thumbs.db
 
 # Journaux et sauvegardes locales
 *.log
-data_avant_validation/
+/data_avant_validation/
 
 # Configuration locale de l'éditeur
 .claude/
