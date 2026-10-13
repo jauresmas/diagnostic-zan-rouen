@@ -58,6 +58,11 @@ communes_indicateurs;zone_U_ha;float64;Surface en zone U du PLUi (ha)
 communes_indicateurs;au_non_artif_ha;float64;Surface des zones AU non artificialisée en 2022 (ha)
 communes_indicateurs;au_rpg_ha;float64;Parcelles agricoles RPG 2024 situées en zone AU (ha)
 communes_indicateurs;u_non_artif_ha;float64;Surface non artificialisée en zone U en 2022 (ha)
+communes_indicateurs;div_nb;int64;Parcelles divisées 2018-2026 (cadastre Etalab)
+communes_indicateurs;div_lots;int64;Lots créés par division 2018-2026
+communes_indicateurs;div_u_hab;int64;Parcelles divisées en zone U à dominante habitat
+communes_indicateurs;part_artif_pct;float64;Part des divisions portant sur un terrain déjà artificialisé en 2019 (%)
+communes_indicateurs;div_100ha_u;float64;Divisions pour 100 ha de zone U
 communes_centroides;code_insee;object;Code INSEE de la commune
 communes_centroides;nom;object;Nom de la commune
 communes_centroides;conso_1121_ha;float64;Consommation d'ENAF 2011-2021, toutes destinations (ha)
@@ -116,6 +121,11 @@ communes_centroides;zone_U_ha;float64;Surface en zone U du PLUi (ha)
 communes_centroides;au_non_artif_ha;float64;Surface des zones AU non artificialisée en 2022 (ha)
 communes_centroides;au_rpg_ha;float64;Parcelles agricoles RPG 2024 situées en zone AU (ha)
 communes_centroides;u_non_artif_ha;float64;Surface non artificialisée en zone U en 2022 (ha)
+communes_centroides;div_nb;int64;Parcelles divisées 2018-2026 (cadastre Etalab)
+communes_centroides;div_lots;int64;Lots créés par division 2018-2026
+communes_centroides;div_u_hab;int64;Parcelles divisées en zone U à dominante habitat
+communes_centroides;part_artif_pct;float64;Part des divisions portant sur un terrain déjà artificialisé en 2019 (%)
+communes_centroides;div_100ha_u;float64;Divisions pour 100 ha de zone U
 plui_zonage_qualifie;libelle;object;Code de la zone du PLUi
 plui_zonage_qualifie;libelong;object;Libellé long de la zone
 plui_zonage_qualifie;typezone;object;Type de zone CNIG (U, AUc, AUs, A, N)
@@ -174,6 +184,23 @@ gisements_densification;logements_mobilisables;float64;Logements mobilisables à
 contraintes_prescriptions;typepsc;object;Type de prescription CNIG
 contraintes_prescriptions;stypepsc;object;Sous-type de prescription
 contraintes_prescriptions;libelle;object;Code de la zone du PLUi
+divisions_parcellaires;code_insee;object;Code INSEE de la commune
+divisions_parcellaires;commune;object;Nom de la commune
+divisions_parcellaires;id_mere;object;Identifiant cadastral de la parcelle divisée (2018)
+divisions_parcellaires;section;object;Section cadastrale
+divisions_parcellaires;surface_m2;float64;Surface de la parcelle (m²)
+divisions_parcellaires;nb_lots;int64;Nombre de parcelles issues de la division
+divisions_parcellaires;lots_crees;int64;Lots supplémentaires créés (nb_lots - 1)
+divisions_parcellaires;annee;int32;Année de création des nouvelles parcelles
+divisions_parcellaires;categorie;object;Zone du PLUi de la parcelle divisée
+divisions_parcellaires;zone_plui;object;Zone du PLUi (majoritaire)
+divisions_parcellaires;part_artif_2019;float64;Part artificialisée en 2019 (OCS GE, 0-1)
+divisions_parcellaires;etat_sol_2019;object;État du sol en 2019
+lots_issus_divisions;code_insee;object;Code INSEE de la commune
+lots_issus_divisions;id;object;Identifiant cadastral (2026)
+lots_issus_divisions;id_mere;object;Identifiant cadastral de la parcelle divisée (2018)
+lots_issus_divisions;surface_m2;float64;Surface de la parcelle (m²)
+lots_issus_divisions;annee;int32;Année de création des nouvelles parcelles
 cadastre_parcelles_etude;idu;object;Identifiant cadastral de la parcelle
 cadastre_parcelles_etude;section;object;Section cadastrale
 cadastre_parcelles_etude;numero;object;Numéro de parcelle

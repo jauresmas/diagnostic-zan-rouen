@@ -25,6 +25,7 @@ ETAPES = [
     ("02_evolution_ocsge", "Occupation du sol et artificialisation 2019-2022"),
     ("03_plui_occupation", "Croisement PLUi x occupation du sol"),
     ("04_gisements_densification", "Gisements de densification"),
+    ("04b_divisions_parcellaires", "Divisions parcellaires observées 2018-2026"),
     ("05_livrables", "Exports SIG, tableur, atlas communal, carte web"),
     ("06_documents", "Note méthodologique, fiche tutoriel, bordereau"),
 ]

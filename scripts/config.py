@@ -81,5 +81,13 @@ PRESCRIPTIONS_EXCLUANTES = {
            "talus", "espace naturel", "trottoir", "sente", "carrefour", "berge"),
 }
 
+# --- Divisions parcellaires observées (étape 4 bis) ---------------------------
+# Comparaison de deux millésimes du cadastre Etalab (PCI vecteur, trimestriel depuis 2017)
+CADASTRE_ETALAB = "https://cadastre.data.gouv.fr/data/etalab-cadastre"
+CADASTRE_MILLESIMES = ("2018-01-02", "2026-09-01")
+COUVERTURE_MIN_DIVISION = 0.90   # part de la parcelle mère couverte par ses nouvelles parcelles
+SEUIL_REMANIEMENT = 0.50         # section exclue si plus de 50 % de ses parcelles changent de numéro
+SEUIL_ATLAS_DIVISIONS = 5        # une page d'atlas par commune ayant au moins 5 divisions
+
 # --- Mise en page -------------------------------------------------------------
 AUTEUR = "Jaurès DAA-HINGBANON"

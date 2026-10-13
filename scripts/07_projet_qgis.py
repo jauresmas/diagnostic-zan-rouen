@@ -45,6 +45,12 @@ FLUX = {"Artificialisation": "#b8262b", "Désartificialisation": "#159a6b"}
 GISEMENTS = {"Dent creuse": "#b8262b", "Grand tènement": "#6e1414", "Division parcellaire": "#f0a04b"}
 
 
+CATEGORIES_DIV = {"U habitat": ("Zone U à dominante habitat", "#e5714a"),
+                  "U autre": ("Autre zone U", "#7b3fa0"),
+                  "AU": ("Zone à urbaniser (AU)", "#d4a03a"),
+                  "A ou N": ("Zone agricole ou naturelle", "#1f6f3f")}
+
+
 # --- Couches et symbologie ---------------------------------------------------------------------
 def couche(nom, titre):
     lyr = QgsVectorLayer(f"{GPKG}|layername={nom}", titre, "ogr")
@@ -322,6 +328,57 @@ def atlas_a4(projet, couverture, couches_leg, emprise_metropole):
     return lay
 
 
+INDICATEURS_DIVISIONS = """<div style="font-family:'Segoe UI';font-size:8.5pt;color:#1f1f1f;line-height:1.35">
+<b style="color:#184f95">DIVISIONS INSCRITES AU CADASTRE (2018-2026)</b><br>
+Parcelles divisées : <b>[% format_number("div_nb", 0) %]</b><br>
+Lots créés : <b>[% format_number("div_lots", 0) %]</b><br>
+Dont en zone U à dominante habitat : [% format_number("div_u_hab", 0) %]<br>
+Divisions sur terrain déjà artificialisé (2019) : [% format_number("part_artif_pct", 0) %] %<br>
+Divisions pour 100 ha de zone U : [% format_number("div_100ha_u", 1) %]
+</div>"""
+
+
+def atlas_divisions(projet, couverture, couches_leg, emprise_metropole):
+    """Atlas séparé : une page par commune ayant au moins 5 divisions parcellaires."""
+    lay = QgsPrintLayout(projet)
+    lay.initializeDefaults()
+    lay.setName("Atlas des divisions parcellaires 2018-2026")
+    lay.pageCollection().page(0).setPageSize("A4", QgsLayoutItemPage.Landscape)
+    rectangle(lay, 0, 0, 297, 18, BLEU)
+    texte(lay, '[% "nom" %]', 8, 3, 180, 12, 18, "#ffffff", gras=True)
+    texte(lay, 'Divisions parcellaires 2018-2026 · INSEE [% "code_insee" %]', 190, 6, 100, 8, 9, "#dce8f6")
+    m = carte(lay, "Divisions parcellaires", emprise_metropole, 8, 23, 180, 170)
+    m.setAtlasDriven(True)
+    m.setAtlasScalingMode(QgsLayoutItemMap.Auto)
+    m.setAtlasMargin(0.10)
+    habillage(lay, m, 11, 185, 176, 26, 2)
+    loc = carte(lay, "Localisation", emprise_metropole, 194, 23, 95, 62)
+    apercu = QgsLayoutItemMapOverview("Emprise", loc)
+    apercu.setLinkedMap(m)
+    apercu.setFrameSymbol(remplissage("184,38,43,60", "#b8262b", 0.5))
+    loc.overviews().addOverview(apercu)
+    texte(lay, INDICATEURS_DIVISIONS, 194, 90, 95, 45, html=True)
+    leg = legende(lay, m, couches_leg, 194, 138, titre="")
+    texte(lay, "Méthode : parcelle de 2018 disparue en 2026 et couverte à 90 % ou plus par au moins deux "
+               "nouvelles parcelles (cadastre Etalab). Sections remaniées exclues.", 194, 182, 95, 12, 7, "#52514e")
+    texte(lay, "Sources : DGFiP, cadastre Etalab (02/01/2018, 01/09/2026) ; IGN OCS GE 2019, ADMIN EXPRESS ; "
+               "Géoportail de l'Urbanisme (PLUi 04/05/2026).", 8, 199, 200, 6, 7, "#52514e")
+    texte(lay, f"{AUTEUR} · page [% @atlas_featurenumber %] / [% @atlas_totalfeatures %]",
+          230, 199, 60, 6, 7, "#52514e")
+    atlas = lay.atlas()
+    atlas.setCoverageLayer(couverture)
+    atlas.setEnabled(True)
+    atlas.setHideCoverage(False)
+    atlas.setFilterFeatures(True)
+    atlas.setFilterExpression('"div_nb" >= 5')
+    atlas.setPageNameExpression('"nom"')
+    atlas.setFilenameExpression("'divisions_' || \"code_insee\" || '_' || \"nom\"")
+    atlas.setSortFeatures(True)
+    atlas.setSortExpression('"nom"')
+    projet.layoutManager().addLayout(lay)
+    return lay
+
+
 def theme(projet, nom, couches):
     rec = QgsMapThemeCollection.MapThemeRecord()
     rec.setLayerRecords([QgsMapThemeCollection.MapThemeLayerRecord(lyr) for lyr in couches])
@@ -363,12 +420,17 @@ def construire():
     cont.setRenderer(QgsSingleSymbolRenderer(remplissage("#4f8f4a", "#4f8f4a", 0.2, opacite=0.7, style="dense6")))
     bati = couche("bdtopo_batiments_etude", "Bâtiments (BD TOPO)")
     bati.setRenderer(QgsSingleSymbolRenderer(remplissage("#6b6a66", "#6b6a66", 0)))
+    div = couche("divisions_parcellaires", "Parcelles divisées 2018-2026")
+    categories(div, "categorie", CATEGORIES_DIV, opacite=0.85, contour=None, largeur=0.3)
+    lots = couche("lots_issus_divisions", "Lots issus des divisions")
+    lots.setRenderer(QgsSingleSymbolRenderer(remplissage("255,255,255,0", "#1f1f1f", 0.2)))
     parc = couche("cadastre_parcelles_etude", "Parcelles cadastrales")
     parc.setRenderer(QgsSingleSymbolRenderer(remplissage("255,255,255,0", "#cfccc4", 0.1)))
 
     # arbre des couches : le premier groupe créé est dessiné au-dessus
     groupes = [
         ("Habillage atlas", [(masque, False)]),
+        ("Divisions parcellaires 2018-2026", [(lots, False), (div, False)]),
         ("Densification (Isneauville, Bois-Guillaume)", [(gis, False), (cont, False), (bati, False), (parc, False)]),
         ("PLUi", [(au, True), (zon, False)]),
         ("Diagnostic ZAN", [(perim, True), (cercles, True), (destinations, False), (eau, True),
@@ -388,6 +450,7 @@ def construire():
     theme(projet, "C08 Densification", [gis, cont, bati, parc, au, eau, limites, territoire])
     theme(projet, "Atlas communal", [masque, gis, au, flux, zon, eau, territoire])
     theme(projet, "Localisation", [perim, limites, territoire])
+    theme(projet, "Divisions parcellaires", [masque, lots, div, eau, territoire])
 
     met = perim.extent()
     met.grow(1500)
@@ -428,6 +491,7 @@ def construire():
                "accès d'au moins 4 m sur la voie. Résultat à valider sur le terrain.</p>",
                "DGFiP/IGN Parcellaire Express ; IGN BD TOPO, OCS GE 2022 ; Géoportail de l'Urbanisme", km=1)
     atlas_a4(projet, limites, [zon, flux, gis], met)
+    atlas_divisions(projet, limites, [div, lots], met)
 
     # modèles du modeleur graphique, intégrés au projet
     modeles = RACINE / "scripts" / "08_modeles_traitement.py"

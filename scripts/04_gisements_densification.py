@@ -183,7 +183,7 @@ def carte_commune(insee, nom, g, parc_u, com, zones, bati, excl, synth_c):
     P = C.Panneau(axp)
     P.titre("Potentiel identifié")
     P.chiffre(f"{len(g)} terrains", f"soit {C.fr(g.surface_libre_m2.sum() / 1e4, 1, 'ha')} mobilisables "
-              "sans consommer d'ENAF")
+              "dans l'enveloppe urbaine")
     P.chiffre(f"≈ {C.fr(g.logements_mobilisables.sum(), 0)} logements",
               f"à 10 ans après rétention foncière ({C.fr(g.logements_bruts.sum(), 0)} en potentiel brut)")
     for t in TYPES:

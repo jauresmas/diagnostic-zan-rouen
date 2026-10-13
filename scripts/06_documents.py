@@ -172,7 +172,61 @@ def construire(chemin, titre_doc, couv, histoire):
 
 
 # --- Note méthodologique ------------------------------------------------------------------------
-def note_methodologique(s1, s2, s3, s4):
+def section_divisions(s, F, G):
+    """Section 6 bis : divisions parcellaires observées (étape 4 bis)."""
+    a0, a1 = config.CADASTRE_MILLESIMES
+    H = [P("6 bis. Divisions parcellaires observées 2018-2026", "h1")]
+    H += [P("<b>Pourquoi.</b> La division parcellaire est l'autre visage du ZAN : elle densifie le tissu "
+            "pavillonnaire sans consommer d'ENAF quand le terrain est déjà un jardin. Les déclarations préalables "
+            "de division ne sont pas publiées en données ouvertes ; on repère donc les divisions effectivement "
+            f"inscrites au cadastre en comparant les millésimes Etalab du {a0} et du {a1}.")]
+    H += [tableau([
+        ["Critère", "Règle appliquée"],
+        ["Division", f"Parcelle de {a0[:4]} disparue en {a1[:4]}, couverte à au moins "
+                     f"{pct(config.COUVERTURE_MIN_DIVISION * 100)} par 2 nouvelles parcelles ou plus"],
+        ["Date", "Date de création des nouvelles parcelles au cadastre (après la vente ou le bornage)"],
+        ["Remaniements", f"Section exclue si plus de {pct(config.SEUIL_REMANIEMENT * 100)} de ses parcelles "
+                         "changent de numéro (renumérotation, pas division)"],
+        ["Qualification", "Zone du PLUi majoritaire ; part de la parcelle déjà artificialisée en 2019 (OCS GE)"],
+    ], [3.4 * cm, 13.6 * cm])]
+    cat = s["par_categorie"]
+    H += [Spacer(1, 8), encadre(
+        f"<b>{fr(s['nb_divisions'], 0)} parcelles divisées</b> entre {a0[:4]} et {a1[:4]}, créant "
+        f"{fr(s['lots_crees'], 0)} lots supplémentaires sur {fr(s['surface_divisee_ha'], 0, 'ha')}. "
+        f"{pct(s['part_u_habitat'] * 100)} se trouvent en zone U à dominante habitat "
+        f"({fr(cat.get('U habitat', 0), 0)} divisions, parcelle médiane de "
+        f"{fr(s['surface_mediane_u_hab_m2'], 0)} m²). <b>{pct(s['part_div_deja_artif'] * 100)} des divisions portent "
+        f"sur des terrains déjà artificialisés en 2019</b> ({pct(s['part_u_hab_deja_artif'] * 100)} en zone U habitat) : "
+        "jardins, cours ou parcelles bâties, densifiés sans consommation d'ENAF. Les divisions en zone A ou N "
+        "concernent surtout de grandes parcelles agricoles (successions, ventes partielles). "
+        f"{fr(s['sections_remaniees_exclues'], 0)} sections remaniées ont été écartées.")]
+    H += [Spacer(1, 8), figure(G / "G06_Divisions_parcellaires_par_annee.png",
+                               "Figure 9 - Parcelles divisées par année et par zone du PLUi.")]
+    H += [figure(F / "C09_Divisions_parcellaires_2018-2026.png",
+                 "Figure 10 - Planche C09 : nombre de parcelles divisées par commune.")]
+    lignes = [["Commune test", "Grandes parcelles U habitat en 2018", "Divisées depuis",
+               "Taux observé", "Ramené à 10 ans", "Hypothèse du modèle"]]
+    for nom, c in s["calibration"].items():
+        lignes.append([nom, fr(c["parcelles_candidates_2018"], 0), fr(c["divisees"], 0),
+                       pct(c["taux_periode_pct"], 1), pct(c["taux_10_ans_pct"], 1),
+                       pct(s["hypothese_mobilisation_10_ans_pct"])])
+    H += [P("Calibration du modèle de densification", "h2"),
+          P(f"Parmi les parcelles de plus de {fr(config.SURFACE_MIN_DIVISION_M2)} m² situées en zone U à dominante "
+            "habitat en 2018, la part effectivement divisée donne un ordre de grandeur du taux de mobilisation "
+            "réel, à comparer à l'hypothèse retenue à l'étape 4 (qui ne porte que sur les parcelles remplissant "
+            "tous les critères du modèle) :"),
+          tableau(lignes, [3 * cm, 3.4 * cm, 2.4 * cm, 2.4 * cm, 2.6 * cm, 3.2 * cm])]
+    H += [Spacer(1, 6), P("<b>Limites.</b> Le cadastre enregistre les divisions réalisées, pas les autorisations "
+                          "déposées : une déclaration préalable non suivie d'effet n'apparaît pas, et la date "
+                          "observée suit la vente de quelques mois. Certaines divisions ne relèvent pas de la "
+                          "densification (successions, régularisations). Le croisement avec les déclarations "
+                          "préalables issues du logiciel d'instruction (ADS) permettrait de suivre toute la "
+                          "chaîne, du dépôt à la construction.")]
+    H += [PageBreak()]
+    return H
+
+
+def note_methodologique(s1, s2, s3, s4, s4b=None):
     F = config.LIVRABLES / "03_Planches_cartographiques"
     G = config.LIVRABLES / "04_Graphiques"
     restant = s3["enveloppe_restante_ha"]
@@ -186,7 +240,8 @@ def note_methodologique(s1, s2, s3, s4):
     H += [P("Sommaire", "h1")]
     H += puces(["1. Contexte et objectifs", "2. Données mobilisées", "3. Consommation d'espaces 2011-2025",
                 "4. Artificialisation des sols 2019-2022", "5. Le PLUi face à la trajectoire ZAN",
-                "6. Gisements de densification", "7. Chaîne de traitement et mise à jour",
+                "6. Gisements de densification", "6 bis. Divisions parcellaires observées 2018-2026",
+                "7. Chaîne de traitement et mise à jour",
                 "8. Limites et précautions d'usage", "9. Pistes de prolongement", "Annexe : liste des livrables"])
     H += [Spacer(1, 14), P("Les chiffres à retenir", "h2")]
     H += [tableau([
@@ -371,14 +426,19 @@ def note_methodologique(s1, s2, s3, s4):
     H += [Spacer(1, 10), P("Résultats", "h2"),
           tableau(lignes, [3 * cm, 1.9 * cm, 1.9 * cm, 2.6 * cm, 2.6 * cm, 2.3 * cm, 2.7 * cm])]
     H += [Spacer(1, 6), P(f"Au total, <b>{tot_gis} terrains et {fr(tot_ha, 0, 'ha')}</b> sont mobilisables "
-                          f"sans consommer d'ENAF, soit environ <b>{fr(tot_log, 0)} logements à 10 ans</b> "
+                          f"dans l'enveloppe urbaine, soit environ <b>{fr(tot_log, 0)} logements à 10 ans</b> "
                           "après prise en compte de la rétention foncière. Les divisions parcellaires "
                           "dominent : c'est la marque d'un tissu pavillonnaire à grandes parcelles, typique "
                           "du plateau nord.")]
+    H += [P("Environ les trois quarts de cette surface étaient déjà artificialisés en 2022 (jardins, cours, "
+            "stationnements) ; le reste est boisé ou agricole et pourrait compter comme consommation d'ENAF "
+            "selon sa nature au cadastre, que seuls les fichiers fonciers détaillés permettent de vérifier.")]
     nom2 = communes[-1].replace(" ", "-")
     H += [figure(F / f"C08_Gisements_densification_{nom2}.png",
                  f"Figure 8 - Planche C08 : gisements repérés à {communes[-1]}.")]
     H += [PageBreak()]
+    if s4b:
+        H += section_divisions(s4b, F, G)
 
     # 7
     H += [P("7. Chaîne de traitement et mise à jour", "h1")]
@@ -392,6 +452,7 @@ def note_methodologique(s1, s2, s3, s4):
         ["02_evolution_ocsge", "Classement artificialisé / non artificialisé, flux 2019-2022", "C03, C04, G04"],
         ["03_plui_occupation", "Croisement zonage x OCS GE x RPG", "C05, C06, G05"],
         ["04_gisements_densification", "Repérage des gisements à la parcelle", "C07, C08"],
+        ["04b_divisions_parcellaires", "Divisions observées 2018-2026 (cadastre)", "C09, G06, atlas des divisions"],
         ["05_livrables", "Exports SIG, classeur, atlas, carte web", "GPKG, GDB, XLSX, atlas PDF"],
         ["06_documents", "Note, fiche tutoriel, bordereau", "PDF"],
         ["run_all", "Exécution de toute la chaîne", "Journal d'exécution"],
@@ -460,7 +521,7 @@ def fiche_tutoriel():
          P("3. Relancer la chaîne", "h2"),
          P("python scripts/run_all.py", "code"),
          P("Pour ne rejouer qu'une partie, par exemple à partir des livrables :"),
-         P("python scripts/run_all.py --depuis 5", "code"),
+         P("python scripts/run_all.py --depuis 6", "code"),
          P("4. Contrôler", "h2")]
     H += puces(["Lire le journal : chaque étape affiche ses chiffres clés et le nombre d'entités produites.",
                 "Comparer la consommation 2011-2021 avec la valeur du portail de l'artificialisation "
@@ -523,10 +584,12 @@ def bordereau():
         ("02_Donnees_SIG/modeles/", "Modèles QGIS (.model3)",
          "Modeleur graphique : bilan d'artificialisation d'un secteur ; espaces libres en zone U"),
         ("02_Donnees_SIG/dictionnaire_des_donnees.csv", "CSV", "Description de chaque champ"),
-        ("03_Planches_cartographiques/C01 à C08", "PDF + PNG (A3)", "8 planches thématiques imprimables"),
-        ("04_Graphiques/G01 à G05", "PDF + PNG", "Graphiques d'analyse"),
+        ("03_Planches_cartographiques/C01 à C09", "PDF + PNG (A3)", "9 planches thématiques imprimables"),
+        ("04_Graphiques/G01 à G06", "PDF + PNG", "Graphiques d'analyse"),
         ("05_Tableaux/Indicateurs_diagnostic_ZAN_Rouen.xlsx", "Excel", "Indicateurs par commune, zones AU, gisements"),
         ("06_Atlas_communal/Atlas_communal_ZAN_Metropole_Rouen.pdf", "PDF (A4)", "Une page par commune (71)"),
+        ("07_Atlas_divisions/Atlas_divisions_parcellaires_Metropole_Rouen.pdf", "PDF (A4)",
+         "Atlas séparé des divisions parcellaires 2018-2026"),
         ("docs/index.html", "Page web", "Carte interactive (GitHub Pages)"),
         ("scripts/", "Python", "Chaîne de traitement complète et reproductible"),
     ]
@@ -559,7 +622,9 @@ def main():
     log("Étape 6 - Documents")
     DOSSIER_DOC.mkdir(parents=True, exist_ok=True)
     s = [json.loads((config.INTERIM / f"synthese_etape{k}.json").read_text(encoding="utf-8")) for k in (1, 2, 3, 4)]
-    note_methodologique(*s)
+    f4b = config.INTERIM / "synthese_etape4b.json"
+    s4b = json.loads(f4b.read_text(encoding="utf-8")) if f4b.exists() else None
+    note_methodologique(*s, s4b=s4b)
     fiche_tutoriel()
     bordereau()
     log("Documents produits")

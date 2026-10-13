@@ -90,6 +90,14 @@ CHAMPS = {
     "cleabs": "Identifiant BD TOPO", "nature": "Nature du bâtiment", "usage_1": "Usage principal du bâtiment",
     "construction_legere": "Construction légère (1) ou non (0)", "nombre_de_logements": "Nombre de logements",
     "hauteur": "Hauteur du bâtiment (m)",
+    "div_nb": "Parcelles divisées 2018-2026 (cadastre Etalab)", "div_lots": "Lots créés par division 2018-2026",
+    "div_u_hab": "Parcelles divisées en zone U à dominante habitat",
+    "part_artif_pct": "Part des divisions portant sur un terrain déjà artificialisé en 2019 (%)",
+    "div_100ha_u": "Divisions pour 100 ha de zone U",
+    "id_mere": "Identifiant cadastral de la parcelle divisée (2018)", "nb_lots": "Nombre de parcelles issues de la division",
+    "lots_crees": "Lots supplémentaires créés (nb_lots - 1)", "annee": "Année de création des nouvelles parcelles",
+    "categorie": "Zone du PLUi de la parcelle divisée", "part_artif_2019": "Part artificialisée en 2019 (OCS GE, 0-1)",
+    "etat_sol_2019": "État du sol en 2019", "id": "Identifiant cadastral (2026)",
 }
 
 
@@ -124,7 +132,7 @@ def en_multipolygone(g):
 
 def couches_livrables():
     ind = lire("ind_conso_enaf")
-    for nom in ("ind_ocsge", "ind_plui"):
+    for nom in ("ind_ocsge", "ind_plui", "ind_divisions"):
         autre = lire(nom).drop(columns=["geometry", "nom"], errors="ignore")
         ind = ind.merge(autre, on="code_insee", how="left")
     # point intérieur de chaque commune : support des cercles proportionnels (valeurs absolues)
@@ -140,6 +148,8 @@ def couches_livrables():
         "ocsge_flux_2019_2022": lire("ocsge_flux_2019_2022"),
         "gisements_densification": lire("gisements_densification"),
         "contraintes_prescriptions": lire("contraintes_prescriptions"),
+        "divisions_parcellaires": lire("divisions_parcellaires"),
+        "lots_issus_divisions": lire("lots_issus_divisions"),
         # données d'entrée du modèle QGIS de densification (communes test)
         "cadastre_parcelles_etude": lire("cadastre_parcelles"),
         "bdtopo_batiments_etude": batiments_2d(),
@@ -217,6 +227,8 @@ def classeur(c, dico, syntheses):
         "Série annuelle ENAF": pd.read_csv(config.INTERIM / "conso_annuelle_metropole.csv"),
         "Zones AU": pd.DataFrame(c["plui_zones_au"].drop(columns="geometry")).sort_values("non_artif_ha", ascending=False),
         "Gisements": pd.DataFrame(c["gisements_densification"].drop(columns="geometry")),
+        "Divisions 2018-2026": pd.DataFrame(c["divisions_parcellaires"].drop(columns="geometry"))
+            .sort_values(["commune", "annee"]),
         "Transitions OCS GE": pd.read_csv(config.INTERIM / "matrice_transitions_ocsge_2019_2022.csv", index_col=0)
             .reset_index().rename(columns={"index": "Classe 2019 \\ Classe 2022"}),
         "Dictionnaire": dico,
