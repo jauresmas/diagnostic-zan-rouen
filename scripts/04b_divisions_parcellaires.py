@@ -18,8 +18,6 @@ Livrables : planche C09, graphique G06 et un atlas dédié (07_Atlas_divisions).
 """
 import importlib
 import json
-import shutil
-import subprocess
 
 import geopandas as gpd
 import matplotlib.pyplot as plt
@@ -30,7 +28,7 @@ from matplotlib.patches import Circle, Ellipse, Rectangle
 
 import cartes as C
 import config
-from outils import SESSION, ecrire, fond_eau, lire, log
+from outils import cadastre_etalab, ecrire, fond_eau, lire, log
 
 T0, T1 = config.CADASTRE_MILLESIMES
 A0, A1 = int(T0[:4]), int(T1[:4])
@@ -45,25 +43,7 @@ CATEGORIES = {  # zone du PLUi de la parcelle mère
 COUL_DIV = "#f0a04b"  # même teinte que les « divisions parcellaires » de l'étape 4
 
 
-def telecharger_cadastre(insee, millesime):
-    dossier = config.RAW / "cadastre" / millesime
-    dossier.mkdir(parents=True, exist_ok=True)
-    f = dossier / f"cadastre-{insee}-parcelles.json.gz"
-    if not f.exists():
-        url = (f"{config.CADASTRE_ETALAB}/{millesime}/geojson/communes/"
-               f"{config.DEPARTEMENT}/{insee}/cadastre-{insee}-parcelles.json.gz")
-        part = f.with_suffix(".part")
-        if shutil.which("curl"):  # curl (inclus dans Windows 10+) : plus robuste derrière certains réseaux
-            subprocess.run(["curl", "-sSfL", "--retry", "3", "-o", str(part), url], check=True, timeout=300)
-        else:
-            with SESSION.get(url, stream=True, timeout=120) as r:
-                r.raise_for_status()
-                with open(part, "wb") as out:
-                    shutil.copyfileobj(r.raw, out)  # gzip conservé tel quel, lu via /vsigzip/
-        part.rename(f)
-    gdf = gpd.read_file(f"/vsigzip/{f.as_posix()}", engine="pyogrio").to_crs(config.CRS)
-    gdf["geometry"] = gdf.geometry.make_valid()
-    return gdf
+telecharger_cadastre = cadastre_etalab  # fonction partagée avec l'étape 4 (outils.py)
 
 
 def detecter(insee, nom):

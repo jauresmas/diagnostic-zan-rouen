@@ -226,7 +226,7 @@ def section_divisions(s, F, G):
     return H
 
 
-def note_methodologique(s1, s2, s3, s4, s4b=None):
+def note_methodologique(s1, s2, s3, s4, s4b=None, s4m=None):
     F = config.LIVRABLES / "03_Planches_cartographiques"
     G = config.LIVRABLES / "04_Graphiques"
     restant = s3["enveloppe_restante_ha"]
@@ -394,8 +394,9 @@ def note_methodologique(s1, s2, s3, s4, s4b=None):
     H += [P("6. Gisements de densification", "h1")]
     H += [P(f"<b>Objectif.</b> L'article L.151-5 du code de l'urbanisme subordonne toute nouvelle consommation "
             f"d'ENAF dans un PLU(i) à une étude de densification des zones déjà urbanisées. Une méthode "
-            f"automatisée de repérage a été testée sur {' et '.join(communes)}, deux communes périurbaines "
-            "du plateau nord parmi les plus consommatrices d'ENAF depuis 2011.")]
+            f"automatisée de repérage a été mise au point sur {' et '.join(communes)}, deux communes "
+            "périurbaines du plateau nord parmi les plus consommatrices d'ENAF depuis 2011, puis appliquée "
+            "aux 71 communes de la Métropole (atlas dédié).")]
     H += [tableau([
         ["Critère", "Règle appliquée"],
         ["Périmètre", "Parcelles situées à plus de 50 % en zone U à dominante habitat (UA, UB, UC, UD, UR)"],
@@ -410,11 +411,14 @@ def note_methodologique(s1, s2, s3, s4, s4b=None):
         ["Typologie", f"Dent creuse : parcelle non bâtie. Grand tènement : plus de {fr(config.GRAND_TENEMENT_M2)} m² "
                       f"libres. Division parcellaire : parcelle bâtie de plus de {fr(config.SURFACE_MIN_DIVISION_M2)} m² "
                       f"avec une emprise au sol inférieure à {pct(config.SEUIL_EMPRISE_SOUS_OCC * 100)}"],
+        ["Emprises techniques", "Terrains couverts à plus de 50 % par un usage de transport ou de réseau "
+                                "dans l'OCS GE (voies ferrées, routes, logistique) : exclus"],
         ["Vigilance", "Terrains boisés à plus de 50 % ou situés dans une OAP : signalés, à arbitrer"],
         ["Programmation", f"{config.DENSITE_LOG_HA} logements/ha ; mobilisation à 10 ans : dents creuses "
                           f"{pct(config.TAUX_MOBILISATION['Dent creuse'] * 100)}, divisions "
                           f"{pct(config.TAUX_MOBILISATION['Division parcellaire'] * 100)}, grands tènements "
-                          f"{pct(config.TAUX_MOBILISATION['Grand tènement'] * 100)} (hypothèses)"],
+                          f"{pct(config.TAUX_MOBILISATION['Grand tènement'] * 100)}. Le taux des divisions "
+                          "est observé (section 6 bis) ; les deux autres restent des hypothèses"],
     ], [3.4 * cm, 13.6 * cm])]
     lignes = [["Commune", "Gisements", "Surface", "dont dents creuses", "dont divisions", "Logements bruts",
                "Mobilisables à 10 ans"]]
@@ -423,7 +427,7 @@ def note_methodologique(s1, s2, s3, s4, s4b=None):
                        f"{s['nb_Dent creuse']} ({fr(s['ha_Dent creuse'], 1, 'ha')})",
                        f"{s['nb_Division parcellaire']} ({fr(s['ha_Division parcellaire'], 1, 'ha')})",
                        s["logements_bruts"], f"≈ {fr(s['logements_mobilisables'], 0)}"])
-    H += [Spacer(1, 10), P("Résultats", "h2"),
+    H += [Spacer(1, 10), P("Résultats dans les communes test", "h2"),
           tableau(lignes, [3 * cm, 1.9 * cm, 1.9 * cm, 2.6 * cm, 2.6 * cm, 2.3 * cm, 2.7 * cm])]
     H += [Spacer(1, 6), P(f"Au total, <b>{tot_gis} terrains et {fr(tot_ha, 0, 'ha')}</b> sont mobilisables "
                           f"dans l'enveloppe urbaine, soit environ <b>{fr(tot_log, 0)} logements à 10 ans</b> "
@@ -436,6 +440,23 @@ def note_methodologique(s1, s2, s3, s4, s4b=None):
     nom2 = communes[-1].replace(" ", "-")
     H += [figure(F / f"C08_Gisements_densification_{nom2}.png",
                  f"Figure 8 - Planche C08 : gisements repérés à {communes[-1]}.")]
+    if s4m:
+        pt = s4m["par_type"]
+        H += [P("Extension aux 71 communes", "h2"),
+              encadre(f"Appliquée à toute la Métropole, la méthode repère <b>{fr(s4m['nb_gisements'], 0)} terrains</b> "
+                      f"({fr(s4m['surface_ha'], 0, 'ha')}) dans {s4m['nb_communes']} communes : "
+                      f"{fr(pt['Dent creuse']['nb'], 0)} dents creuses, {fr(pt['Division parcellaire']['nb'], 0)} divisions "
+                      f"parcellaires possibles et {fr(pt['Grand tènement']['nb'], 0)} grands tènements. Le potentiel est "
+                      f"d'environ <b>{fr(s4m['logements_mobilisables'], 0)} logements à 10 ans</b> "
+                      f"({fr(s4m['logements_bruts'], 0)} en potentiel brut)."),
+              Spacer(1, 6),
+              P(f"Dans les {len(s4m['communes_denses'])} communes les plus denses (plus de "
+                f"{config.SEUIL_TISSU_DENSE_HAB_HA} habitants par hectare : {', '.join(s4m['communes_denses'])}), "
+                "la méthode, pensée pour le tissu pavillonnaire, repère surtout des cours et des cœurs d'îlot : "
+                "leurs résultats sont signalés et à interpréter avec prudence. Hors de ces communes, le potentiel "
+                f"est d'environ {fr(s4m['logements_mobilisables_hors_denses'], 0)} logements."),
+              figure(F / "C10_Gisements_densification_71_communes.png",
+                     "Figure 8 bis - Planche C10 : logements mobilisables à 10 ans par commune.")]
     H += [PageBreak()]
     if s4b:
         H += section_divisions(s4b, F, G)
@@ -451,7 +472,8 @@ def note_methodologique(s1, s2, s3, s4, s4b=None):
         ["01_consommation_enaf", "Indicateurs ENAF, trajectoire ZAN", "C01, C02, G01 à G03"],
         ["02_evolution_ocsge", "Classement artificialisé / non artificialisé, flux 2019-2022", "C03, C04, G04"],
         ["03_plui_occupation", "Croisement zonage x OCS GE x RPG", "C05, C06, G05"],
-        ["04_gisements_densification", "Repérage des gisements à la parcelle", "C07, C08"],
+        ["04_gisements_densification", "Repérage des gisements à la parcelle (71 communes)",
+         "C07, C08, C10, atlas des gisements"],
         ["04b_divisions_parcellaires", "Divisions observées 2018-2026 (cadastre)", "C09, G06, atlas des divisions"],
         ["05_livrables", "Exports SIG, classeur, atlas, carte web", "GPKG, GDB, XLSX, atlas PDF"],
         ["06_documents", "Note, fiche tutoriel, bordereau", "PDF"],
@@ -584,12 +606,14 @@ def bordereau():
         ("02_Donnees_SIG/modeles/", "Modèles QGIS (.model3)",
          "Modeleur graphique : bilan d'artificialisation d'un secteur ; espaces libres en zone U"),
         ("02_Donnees_SIG/dictionnaire_des_donnees.csv", "CSV", "Description de chaque champ"),
-        ("03_Planches_cartographiques/C01 à C09", "PDF + PNG (A3)", "9 planches thématiques imprimables"),
+        ("03_Planches_cartographiques/C01 à C10", "PDF + PNG (A3)", "10 planches thématiques imprimables"),
         ("04_Graphiques/G01 à G06", "PDF + PNG", "Graphiques d'analyse"),
         ("05_Tableaux/Indicateurs_diagnostic_ZAN_Rouen.xlsx", "Excel", "Indicateurs par commune, zones AU, gisements"),
         ("06_Atlas_communal/Atlas_communal_ZAN_Metropole_Rouen.pdf", "PDF (A4)", "Une page par commune (71)"),
         ("07_Atlas_divisions/Atlas_divisions_parcellaires_Metropole_Rouen.pdf", "PDF (A4)",
          "Atlas séparé des divisions parcellaires 2018-2026"),
+        ("08_Atlas_gisements/Atlas_gisements_densification_Metropole_Rouen.pdf", "PDF (A4)",
+         "Atlas séparé des gisements de densification (71 communes)"),
         ("docs/index.html", "Page web", "Carte interactive (GitHub Pages)"),
         ("scripts/", "Python", "Chaîne de traitement complète et reproductible"),
     ]
@@ -624,7 +648,9 @@ def main():
     s = [json.loads((config.INTERIM / f"synthese_etape{k}.json").read_text(encoding="utf-8")) for k in (1, 2, 3, 4)]
     f4b = config.INTERIM / "synthese_etape4b.json"
     s4b = json.loads(f4b.read_text(encoding="utf-8")) if f4b.exists() else None
-    note_methodologique(*s, s4b=s4b)
+    f4m = config.INTERIM / "synthese_etape4_metropole.json"
+    s4m = json.loads(f4m.read_text(encoding="utf-8")) if f4m.exists() else None
+    note_methodologique(*s, s4b=s4b, s4m=s4m)
     fiche_tutoriel()
     bordereau()
     log("Documents produits")

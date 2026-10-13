@@ -77,6 +77,31 @@ def ha(m2):
     return m2 / 10_000
 
 
+def cadastre_etalab(insee, millesime):
+    """Parcelles d'une commune pour un millésime du cadastre Etalab (téléchargement mis en cache)."""
+    import shutil
+    import subprocess
+
+    dossier = config.RAW / "cadastre" / millesime
+    dossier.mkdir(parents=True, exist_ok=True)
+    f = dossier / f"cadastre-{insee}-parcelles.json.gz"
+    if not f.exists():
+        url = (f"{config.CADASTRE_ETALAB}/{millesime}/geojson/communes/"
+               f"{config.DEPARTEMENT}/{insee}/cadastre-{insee}-parcelles.json.gz")
+        part = f.with_suffix(".part")
+        if shutil.which("curl"):  # curl (inclus dans Windows 10+) : plus robuste derrière certains réseaux
+            subprocess.run(["curl", "-sSfL", "--retry", "3", "-o", str(part), url], check=True, timeout=300)
+        else:
+            with SESSION.get(url, stream=True, timeout=120) as r:
+                r.raise_for_status()
+                with open(part, "wb") as out:
+                    shutil.copyfileobj(r.raw, out)  # gzip conservé tel quel, lu via /vsigzip/
+        part.rename(f)
+    gdf = gpd.read_file(f"/vsigzip/{f.as_posix()}", engine="pyogrio").to_crs(config.CRS)
+    gdf["geometry"] = gdf.geometry.make_valid()
+    return gdf
+
+
 def couches():
     import pyogrio
     return {nom for nom, _ in pyogrio.list_layers(config.GPKG)}

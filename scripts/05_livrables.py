@@ -98,6 +98,11 @@ CHAMPS = {
     "lots_crees": "Lots supplémentaires créés (nb_lots - 1)", "annee": "Année de création des nouvelles parcelles",
     "categorie": "Zone du PLUi de la parcelle divisée", "part_artif_2019": "Part artificialisée en 2019 (OCS GE, 0-1)",
     "etat_sol_2019": "État du sol en 2019", "id": "Identifiant cadastral (2026)",
+    "gis_nb": "Gisements de densification repérés (nombre)", "gis_ha": "Surface des gisements (ha)",
+    "gis_log_bruts": "Potentiel brut de logements des gisements", "gis_log_mob": "Logements mobilisables à 10 ans",
+    "gis_nb_dc": "Dents creuses", "gis_nb_div": "Divisions parcellaires possibles", "gis_nb_gt": "Grands tènements",
+    "densite_hab_ha": "Densité de population 2022 (hab./ha)",
+    "tissu_dense": "Centre urbain dense (1) : méthode de densification moins adaptée",
 }
 
 
@@ -132,7 +137,7 @@ def en_multipolygone(g):
 
 def couches_livrables():
     ind = lire("ind_conso_enaf")
-    for nom in ("ind_ocsge", "ind_plui", "ind_divisions"):
+    for nom in ("ind_ocsge", "ind_plui", "ind_divisions", "ind_gisements"):
         autre = lire(nom).drop(columns=["geometry", "nom"], errors="ignore")
         ind = ind.merge(autre, on="code_insee", how="left")
     # point intérieur de chaque commune : support des cercles proportionnels (valeurs absolues)
@@ -147,13 +152,20 @@ def couches_livrables():
         "plui_zones_au": lire("plui_zones_au").drop(columns=["id_zone"]),
         "ocsge_flux_2019_2022": lire("ocsge_flux_2019_2022"),
         "gisements_densification": lire("gisements_densification"),
-        "contraintes_prescriptions": lire("contraintes_prescriptions"),
+        "contraintes_prescriptions": simplifiee(lire("contraintes_prescriptions"), 0.5),
         "divisions_parcellaires": lire("divisions_parcellaires"),
         "lots_issus_divisions": lire("lots_issus_divisions"),
         # données d'entrée du modèle QGIS de densification (communes test)
         "cadastre_parcelles_etude": lire("cadastre_parcelles"),
         "bdtopo_batiments_etude": batiments_2d(),
     }
+
+
+def simplifiee(gdf, tolerance_m):
+    """Allège une couche très détaillée (prescriptions : 2 millions de sommets) ; écart invisible à l'échelle."""
+    gdf = gdf.copy()
+    gdf["geometry"] = gdf.geometry.simplify(tolerance_m, preserve_topology=True)
+    return gdf
 
 
 def batiments_2d():
@@ -425,36 +437,50 @@ def atlas(c):
 
 # --- 4. Carte web --------------------------------------------------------------------------------
 def carte_web(c):
+    """Carte web : un fichier JS par couche, chargé à la demande par la page (docs/index.html).
+
+    Pour la performance : géométries simplifiées, coordonnées arrondies (1e-4 degré ≈ 10 m pour les
+    communes, 1e-5 ≈ 1 m pour les objets fins), attributs réduits au strict nécessaire.
+    """
     dossier = config.DOCS / "data"
     dossier.mkdir(parents=True, exist_ok=True)
+    for ancien in dossier.glob("*.js"):
+        ancien.unlink()
     garder = ["code_insee", "nom", "pop_2022", "conso_1121_ha", "conso_2125_ha", "evol_rythme_pct",
               "classe_effort", "part_enveloppe_pct", "m2_hab_par_menage_1122", "part_artif_2022_pct",
               "artif_nette_1922_ha", "zone_AU_ha", "au_non_artif_ha", "au_rpg_ha", "c1121_hab_ha",
-              "c1121_act_ha", "geometry"]
-    jeux = {
-        "communes": (c["communes_indicateurs"][garder], 15, 2),
-        "zones_au": (c["plui_zones_au"][["libelle", "libelong", "vocation", "ouverture", "surface_ha",
-                                         "non_artif_ha", "rpg_ha", "urlfic", "code_insee", "geometry"]], 3, 2),
-        "flux": (c["ocsge_flux_2019_2022"][["type_flux", "cs_2019", "us_2019", "cs_2022", "us_2022",
-                                            "surface_ha", "geometry"]], 1, 3),
-        "gisements": (c["gisements_densification"][["commune", "idu", "zone_plui", "type_gisement",
+              "c1121_act_ha", "div_nb", "div_lots", "div_u_hab", "part_artif_pct", "gis_nb", "gis_ha",
+              "gis_log_mob", "gis_log_bruts", "tissu_dense", "geometry"]
+    jeux = {  # nom: (couche, colonnes, tolérance de simplification en m, précision en degrés)
+        "communes": (c["communes_indicateurs"], garder, 15, 1e-4),
+        "zones_au": (c["plui_zones_au"], ["libelle", "libelong", "vocation", "ouverture", "surface_ha",
+                                          "non_artif_ha", "rpg_ha", "urlfic", "geometry"], 3, 1e-5),
+        "flux": (c["ocsge_flux_2019_2022"], ["type_flux", "cs_2019", "us_2019", "cs_2022", "us_2022",
+                                             "surface_ha", "geometry"], 1, 1e-5),
+        "gisements": (c["gisements_densification"], ["commune", "idu", "zone_plui", "type_gisement",
                                                      "surface_libre_m2", "logements_bruts", "vigilance",
-                                                     "geometry"]], 0.5, 3),
+                                                     "geometry"], 0.8, 1e-5),
+        "divisions": (c["divisions_parcellaires"], ["commune", "id_mere", "annee", "nb_lots", "categorie",
+                                                    "etat_sol_2019", "surface_m2", "geometry"], 0.8, 1e-5),
     }
-    lignes = ["// Données générées par scripts/05_livrables.py - ne pas modifier à la main"]
-    for nom, (gdf, tol, nd) in jeux.items():
-        g = gdf.copy()
+    tailles = {}
+    for nom, (gdf, cols, tol, prec) in jeux.items():
+        g = gdf[[col for col in cols if col in gdf.columns]].copy()
         g["geometry"] = g.geometry.simplify(tol, preserve_topology=True)
-        g = g.to_crs(4326)
+        g = g[~g.geometry.is_empty].to_crs(4326)
         for col in g.select_dtypes("float").columns:
-            g[col] = g[col].round(nd if col != "geometry" else 6)
-        g["geometry"] = shapely.set_precision(g.geometry.values, 1e-5)
-        js = g.to_json(drop_id=True)
-        lignes.append(f"window.DATA_{nom.upper()} = {js};")
-    s = {k: json.loads((config.INTERIM / f"synthese_etape{k}.json").read_text(encoding="utf-8")) for k in (1, 2, 3)}
-    lignes.append(f"window.SYNTHESE = {json.dumps(s, ensure_ascii=False)};")
-    (dossier / "donnees.js").write_text("\n".join(lignes), encoding="utf-8")
-    log(f"  carte web : docs/data/donnees.js ({(dossier / 'donnees.js').stat().st_size / 1e6:.1f} Mo)")
+            g[col] = g[col].round(1)
+        for col in g.select_dtypes("bool").columns:
+            g[col] = g[col].astype(int)
+        g["geometry"] = shapely.set_precision(g.geometry.values, prec)
+        f = dossier / f"{nom}.js"
+        f.write_text(f"window.DATA_{nom.upper()} = {g.to_json(drop_id=True, separators=(',', ':'))};",
+                     encoding="utf-8")
+        tailles[nom] = f.stat().st_size / 1e6
+    s = {k: json.loads((config.INTERIM / f"synthese_etape{k}.json").read_text(encoding="utf-8"))
+         for k in ("1", "2", "3", "4_metropole", "4b")}
+    (dossier / "synthese.js").write_text(f"window.SYNTHESE = {json.dumps(s, ensure_ascii=False)};", encoding="utf-8")
+    log("  carte web : " + ", ".join(f"{k} {v:.1f} Mo" for k, v in tailles.items()))
 
 
 def main():

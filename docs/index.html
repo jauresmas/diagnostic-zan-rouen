@@ -4,7 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Diagnostic foncier ZAN · Métropole Rouen Normandie</title>
-<meta name="description" content="Carte interactive : consommation d'espaces naturels, agricoles et forestiers, artificialisation des sols et réservoir foncier du PLUi de la Métropole Rouen Normandie.">
+<meta name="description" content="Carte interactive : consommation d'espaces naturels, agricoles et forestiers, artificialisation, réservoir foncier du PLUi, divisions parcellaires et gisements de densification de la Métropole Rouen Normandie.">
+<link rel="preconnect" href="https://data.geopf.fr">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
 <style>
   :root {
@@ -17,7 +18,6 @@
     --surface: #ffffff;
     --page: #f6f5f1;
     --artif: #b8262b;
-    --desartif: #159a6b;
     --radius: 8px;
     font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
     color: var(--ink);
@@ -32,36 +32,46 @@
   header h1 { margin: 0; font-size: 1.25rem; font-weight: 700; }
   header p { margin: 2px 0 0; color: var(--accent-pale); font-size: .85rem; }
   header a { color: #fff; font-size: .85rem; }
-  main { display: grid; grid-template-columns: 360px 1fr; min-height: 0; }
+  main { display: grid; grid-template-columns: 370px 1fr; min-height: 0; }
   aside { background: var(--surface); border-right: 1px solid var(--line); overflow-y: auto; padding: 18px 20px 28px; }
   #carte { height: 100%; min-height: 420px; background: #eceae4; }
   h2 { font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--accent); margin: 22px 0 10px; }
   h2:first-child { margin-top: 0; }
   .chiffres { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
   .chiffre { background: var(--page); border-radius: var(--radius); padding: 10px 12px; }
-  .chiffre b { display: block; font-size: 1.35rem; line-height: 1.15; }
+  .chiffre b { display: block; font-size: 1.3rem; line-height: 1.15; }
   .chiffre span { font-size: .76rem; color: var(--ink-2); }
   .chiffre.alerte b { color: var(--artif); }
+  select { width: 100%; padding: 8px 10px; border: 1px solid var(--line); border-radius: 6px; font: inherit; background: #fff; }
+  .groupe { font-size: .72rem; color: var(--ink-3); margin: 10px 0 2px 8px; text-transform: uppercase; letter-spacing: .04em; }
   .indicateurs label {
-    display: flex; gap: 8px; align-items: flex-start; padding: 7px 8px; border-radius: 6px; cursor: pointer; font-size: .88rem;
+    display: flex; gap: 8px; align-items: flex-start; padding: 6px 8px; border-radius: 6px; cursor: pointer; font-size: .88rem;
   }
   .indicateurs label:hover { background: var(--page); }
   .indicateurs input { margin-top: 3px; accent-color: var(--accent); }
   .legende div { display: flex; align-items: center; gap: 8px; font-size: .82rem; margin: 4px 0; }
-  .legende i { width: 18px; height: 12px; border-radius: 2px; flex: none; border: 1px solid rgba(0,0,0,.08); }
-  .couches label { display: flex; gap: 8px; align-items: center; font-size: .88rem; margin: 6px 0; cursor: pointer; }
-  .couches i { width: 14px; height: 10px; border-radius: 2px; display: inline-block; }
+  .legende i, .couche i { width: 18px; height: 12px; border-radius: 2px; flex: none; border: 1px solid rgba(0,0,0,.08); display: inline-block; }
+  .couche { margin: 8px 0; }
+  .couche > label { display: flex; gap: 8px; align-items: center; font-size: .88rem; cursor: pointer; }
+  .couche .detail { margin: 4px 0 0 26px; font-size: .78rem; color: var(--ink-2); display: flex; flex-wrap: wrap; gap: 4px 12px; }
+  .couche .detail span { display: inline-flex; align-items: center; gap: 5px; }
+  .couche .detail i { width: 12px; height: 10px; }
+  .etat { font-size: .74rem; color: var(--ink-3); margin-left: 26px; min-height: 1em; }
   .note { font-size: .76rem; color: var(--ink-2); line-height: 1.45; }
   .note a { color: var(--accent); }
-  .leaflet-popup-content { font-family: inherit; font-size: .84rem; min-width: 250px; }
+  .leaflet-popup-content { font-family: inherit; font-size: .84rem; min-width: 260px; }
   .popup h3 { margin: 0 0 6px; font-size: 1rem; }
+  .popup h4 { margin: 10px 0 3px; font-size: .72rem; text-transform: uppercase; letter-spacing: .04em; color: var(--accent); }
   .popup table { border-collapse: collapse; width: 100%; }
   .popup td { padding: 3px 0; border-bottom: 1px solid var(--line); }
   .popup td:last-child { text-align: right; font-variant-numeric: tabular-nums; font-weight: 600; padding-left: 12px; }
+  .popup .avert { background: #fdf1e6; border-radius: 6px; padding: 6px 8px; margin-top: 8px; font-size: .78rem; }
   .info-survol {
     background: rgba(255,255,255,.95); padding: 6px 10px; border-radius: 6px; font-size: .84rem;
     box-shadow: 0 1px 4px rgba(0,0,0,.15);
   }
+  .chargement { position: absolute; z-index: 1000; left: 50%; top: 12px; transform: translateX(-50%);
+    background: var(--accent); color: #fff; padding: 6px 14px; border-radius: 99px; font-size: .82rem; display: none; }
   @media (max-width: 820px) {
     main { grid-template-columns: 1fr; grid-template-rows: 60vh auto; }
     aside { order: 2; border-right: 0; border-top: 1px solid var(--line); padding: 16px; }
@@ -74,7 +84,7 @@
 <header>
   <div>
     <h1>Diagnostic foncier ZAN · Métropole Rouen Normandie</h1>
-    <p>Consommation d'espaces, artificialisation des sols et réservoir foncier du PLUi</p>
+    <p>Consommation d'espaces, artificialisation, PLUi, divisions parcellaires et gisements de densification</p>
   </div>
   <a href="https://github.com/jauresmas/diagnostic-zan-rouen">Code et données sur GitHub</a>
 </header>
@@ -83,51 +93,58 @@
     <h2>Chiffres clés</h2>
     <div class="chiffres" id="chiffres"></div>
 
+    <h2>Aller à une commune</h2>
+    <select id="recherche" aria-label="Choisir une commune"><option value="">Choisir une commune…</option></select>
+
     <h2>Indicateur affiché par commune</h2>
     <div class="indicateurs" id="indicateurs"></div>
 
     <h2>Légende</h2>
     <div class="legende" id="legende"></div>
 
-    <h2>Couches</h2>
-    <div class="couches">
-      <label><input type="checkbox" id="c-au" checked> <i style="background:#e5714a"></i> Zones à urbaniser (AU) du PLUi</label>
-      <label><input type="checkbox" id="c-flux"> <i style="background:var(--artif)"></i> Artificialisation 2019-2022 (OCS GE)</label>
-      <label><input type="checkbox" id="c-gis"> <i style="background:#1f1f1f"></i> Gisements de densification (Isneauville, Bois-Guillaume)</label>
-    </div>
+    <h2>Couches détaillées</h2>
+    <div id="couches"></div>
 
     <h2>Sources et méthode</h2>
     <p class="note">
       Cerema, consommation d'ENAF 2011-2025 (fichiers fonciers) · IGN, OCS GE 2019-2022, ADMIN EXPRESS, BD TOPO ·
-      Géoportail de l'Urbanisme, PLUi approuvé le 04/05/2026 · ASP, RPG 2024 · INSEE.
+      DGFiP, cadastre Etalab 2018 et 2026 · Géoportail de l'Urbanisme, PLUi approuvé le 04/05/2026 · ASP, RPG 2024 · INSEE.
       L'enveloppe 2021-2031 est indicative (50 % de la consommation 2011-2021, avant territorialisation par le SRADDET et le SCoT).
-      Méthode détaillée dans la <a href="https://github.com/jauresmas/diagnostic-zan-rouen/tree/main/livrables">note méthodologique</a>.
+      Les gisements sont repérés automatiquement, sans visite de terrain.
+      Méthode détaillée dans la <a href="https://github.com/jauresmas/diagnostic-zan-rouen/tree/main/livrables/01_Documents">note méthodologique</a>.
     </p>
     <p class="note">Réalisation : Jaurès DAA-HINGBANON · octobre 2026 · fond de carte © IGN (Plan IGN v2).</p>
   </aside>
-  <div id="carte" role="region" aria-label="Carte interactive"></div>
+  <div id="carte" role="region" aria-label="Carte interactive"><div class="chargement" id="chargement">Chargement…</div></div>
 </main>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
-<script src="data/donnees.js"></script>
 <script>
+// --- Outils -------------------------------------------------------------------------------
 const nf = (v, d = 0) => v == null || Number.isNaN(v) ? "—"
   : new Intl.NumberFormat("fr-FR", { maximumFractionDigits: d, minimumFractionDigits: d }).format(v);
 const ha = (v, d = 0) => `${nf(v, d)} ha`;
-const pc = (v, d = 0, signe = false) => v == null || Number.isNaN(v) ? "—"
-  : `${signe && v > 0 ? "+" : ""}${nf(v, d)} %`;
+const pc = (v, d = 0, signe = false) => v == null || Number.isNaN(v) ? "—" : `${signe && v > 0 ? "+" : ""}${nf(v, d)} %`;
 
-// --- Chiffres clés -----------------------------------------------------------------------
-const S = window.SYNTHESE;
-const restant = S[1].enveloppe_zan_ha - S[1].conso_2125_ha;
-document.getElementById("chiffres").innerHTML = [
-  [ha(S[1].conso_1121_ha), "d'ENAF consommés de 2011 à 2021"],
-  [pc(S[1].part_enveloppe * 100), "de l'enveloppe 2021-2031 déjà utilisés au 01/01/2025", true],
-  [ha(S[2].artif_nette_ha), "d'artificialisation nette entre 2019 et 2022"],
-  [ha(S[3].au_non_artif_ha), `de zones AU non artificialisées, pour ${ha(restant)} d'enveloppe restante`, true],
-].map(([v, t, a]) => `<div class="chiffre${a ? " alerte" : ""}"><b>${v}</b><span>${t}</span></div>`).join("");
+// Chargement à la demande : chaque couche est un fichier JS séparé (docs/data/*.js)
+const promesses = {};
+const voyant = document.getElementById("chargement");
+let enCours = 0;
+function charger(nom) {
+  if (!promesses[nom]) {
+    enCours++; voyant.style.display = "block";
+    promesses[nom] = new Promise((ok, ko) => {
+      const s = document.createElement("script");
+      s.src = `data/${nom}.js`;
+      s.onload = () => ok(nom === "synthese" ? window.SYNTHESE : window["DATA_" + nom.toUpperCase()]);
+      s.onerror = () => ko(new Error(`Échec du chargement de ${nom}`));
+      document.head.appendChild(s);
+    }).finally(() => { if (--enCours === 0) voyant.style.display = "none"; });
+  }
+  return promesses[nom];
+}
 
-// --- Indicateurs -----------------------------------------------------------------------------
+// --- Indicateurs -------------------------------------------------------------------------
 const CHAUD = ["#fde7da", "#f8c3a4", "#f19a71", "#e5714a", "#9f3a1e"];
 const EFFORT = {
   "Réduction d'au moins 50 %": "#184f95",
@@ -137,136 +154,202 @@ const EFFORT = {
   "Consommation marginale (< 1 ha en 2011-2021)": "#d9d8d2",
 };
 const INDICATEURS = [
-  { cle: "conso_1121_ha", lib: "Consommation d'ENAF 2011-2021", fmt: v => ha(v, 1) },
+  { groupe: "Consommation d'ENAF" },
+  { cle: "conso_1121_ha", lib: "Consommation 2011-2021", fmt: v => ha(v, 1) },
   { cle: "classe_effort", lib: "Évolution du rythme depuis 2021", categ: EFFORT },
+  { groupe: "Artificialisation (OCS GE)" },
   { cle: "part_artif_2022_pct", lib: "Part du territoire artificialisée (2022)", fmt: v => pc(v, 1) },
   { cle: "artif_nette_1922_ha", lib: "Artificialisation nette 2019-2022", fmt: v => ha(v, 1) },
+  { groupe: "PLUi" },
   { cle: "au_non_artif_ha", lib: "Zones AU non artificialisées", fmt: v => ha(v, 1) },
+  { groupe: "Densification" },
+  { cle: "div_nb", lib: "Parcelles divisées 2018-2026", fmt: v => nf(v) },
+  { cle: "part_artif_pct", lib: "Divisions sur terrain déjà artificialisé", fmt: v => pc(v) },
+  { cle: "gis_log_mob", lib: "Logements mobilisables à 10 ans (gisements)", fmt: v => nf(v) },
 ];
+const choix = INDICATEURS.filter(i => i.cle);
+let communesData, actif = choix[0], bornes = [];
 
 function seuils(cle) {  // classes en quantiles (5 classes)
-  const v = window.DATA_COMMUNES.features.map(f => f.properties[cle]).filter(x => x != null).sort((a, b) => a - b);
+  const v = communesData.features.map(f => f.properties[cle]).filter(x => x != null).sort((a, b) => a - b);
   return [0.2, 0.4, 0.6, 0.8].map(q => v[Math.floor(q * (v.length - 1))]);
 }
-
-let actif = INDICATEURS[0], bornes = seuils(actif.cle);
 function couleur(p) {
   const v = p[actif.cle];
   if (actif.categ) return actif.categ[v] || "#d9d8d2";
   if (v == null) return "#d9d8d2";
-  let i = bornes.findIndex(b => v <= b);
+  const i = bornes.findIndex(b => v <= b);
   return CHAUD[i === -1 ? 4 : i];
 }
-
 function legende() {
   const el = document.getElementById("legende");
   if (actif.categ) {
     el.innerHTML = Object.entries(actif.categ).map(([k, c]) => `<div><i style="background:${c}"></i>${k}</div>`).join("");
-  } else {
-    const b = bornes, f = actif.fmt;
-    const lib = [`≤ ${f(b[0])}`, `${f(b[0])} – ${f(b[1])}`, `${f(b[1])} – ${f(b[2])}`, `${f(b[2])} – ${f(b[3])}`, `> ${f(b[3])}`];
-    el.innerHTML = lib.map((l, i) => `<div><i style="background:${CHAUD[i]}"></i>${l}</div>`).join("")
-      + `<div class="note">Classes en quantiles (≈ 14 communes chacune)</div>`;
+    return;
   }
+  const b = bornes, f = actif.fmt;
+  const lib = [`≤ ${f(b[0])}`, `${f(b[0])} – ${f(b[1])}`, `${f(b[1])} – ${f(b[2])}`, `${f(b[2])} – ${f(b[3])}`, `> ${f(b[3])}`];
+  el.innerHTML = lib.map((l, i) => `<div><i style="background:${CHAUD[i]}"></i>${l}</div>`).join("")
+    + `<div class="note">Classes en quantiles (environ 14 communes chacune)</div>`;
 }
 
-document.getElementById("indicateurs").innerHTML = INDICATEURS.map((ind, i) =>
-  `<label><input type="radio" name="ind" value="${i}" ${i === 0 ? "checked" : ""}>${ind.lib}</label>`).join("");
+document.getElementById("indicateurs").innerHTML = INDICATEURS.map(ind => ind.groupe
+  ? `<div class="groupe">${ind.groupe}</div>`
+  : `<label><input type="radio" name="ind" value="${ind.cle}" ${ind === actif ? "checked" : ""}>${ind.lib}</label>`).join("");
 document.querySelectorAll("input[name=ind]").forEach(r => r.addEventListener("change", e => {
-  actif = INDICATEURS[+e.target.value];
+  actif = choix.find(i => i.cle === e.target.value);
   if (!actif.categ) bornes = seuils(actif.cle);
   communes.setStyle(styleCommune);
   legende();
 }));
 
 // --- Carte ------------------------------------------------------------------------------------
-const carte = L.map("carte", { zoomSnap: 0.25, attributionControl: true });
-// Fond Plan IGN v2 (Géoplateforme, sans clé), atténué pour laisser lire la thématique
+const carte = L.map("carte", { preferCanvas: true, zoomSnap: 0.25 });  // rendu canvas : rapide avec des milliers d'objets
 L.tileLayer("https://data.geopf.fr/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0" +
   "&LAYER=GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2&STYLE=normal&TILEMATRIXSET=PM&FORMAT=image/png" +
   "&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}", {
   attribution: "© IGN, Plan IGN v2", maxZoom: 19, opacity: 0.55,
 }).addTo(carte);
-
-const styleCommune = f => ({ fillColor: couleur(f.properties), fillOpacity: 0.82, color: "#fff", weight: 1 });
-function fiche(p) {
-  const lignes = [
-    ["Population 2022", nf(p.pop_2022)],
-    ["Consommation 2011-2021", ha(p.conso_1121_ha, 1)],
-    ["dont habitat / activités", `${ha(p.c1121_hab_ha, 1)} / ${ha(p.c1121_act_ha, 1)}`],
-    ["Consommation 2021-2025", ha(p.conso_2125_ha, 1)],
-    ["Évolution du rythme", pc(p.evol_rythme_pct, 0, true)],
-    ["Enveloppe indicative utilisée", pc(p.part_enveloppe_pct)],
-    ["m² par ménage supplémentaire", p.m2_hab_par_menage_1122 == null ? "—" : `${nf(p.m2_hab_par_menage_1122)} m²`],
-    ["Part artificialisée 2022", pc(p.part_artif_2022_pct, 1)],
-    ["Artificialisation nette 2019-2022", ha(p.artif_nette_1922_ha, 1)],
-    ["Zones AU / non artificialisées", `${ha(p.zone_AU_ha, 1)} / ${ha(p.au_non_artif_ha, 1)}`],
-  ];
-  return `<div class="popup"><h3>${p.nom}</h3><table>${lignes.map(([a, b]) => `<tr><td>${a}</td><td>${b}</td></tr>`).join("")}</table></div>`;
-}
+L.control.scale({ imperial: false, position: "bottomleft" }).addTo(carte);
 
 const survol = L.control({ position: "topright" });
 survol.onAdd = () => { const d = L.DomUtil.create("div", "info-survol"); d.textContent = "Survolez une commune"; return d; };
 survol.addTo(carte);
 
-const communes = L.geoJSON(window.DATA_COMMUNES, {
-  style: styleCommune,
-  onEachFeature: (f, l) => {
-    l.bindPopup(fiche(f.properties));
-    l.on({
-      mouseover: e => {
-        e.target.setStyle({ weight: 2.5, color: "#0b0b0b" });
-        const v = f.properties[actif.cle];
-        survol.getContainer().innerHTML = `<b>${f.properties.nom}</b> · ${actif.categ ? v : actif.fmt(v)}`;
-      },
-      mouseout: e => communes.resetStyle(e.target),
-    });
-  },
-}).addTo(carte);
-carte.fitBounds(communes.getBounds(), { padding: [10, 10] });
+// à l'échelle de la parcelle, l'aplat communal s'efface pour laisser lire les couches détaillées
+const ZOOM_DETAIL = 13;
+const styleCommune = f => ({ fillColor: couleur(f.properties), fillOpacity: carte.getZoom() >= ZOOM_DETAIL ? 0.15 : 0.8,
+                             color: carte.getZoom() >= ZOOM_DETAIL ? "#52514e" : "#fff", weight: 1 });
+function fiche(p) {
+  const bloc = (titre, lignes) => `<h4>${titre}</h4><table>${lignes.map(([a, b]) => `<tr><td>${a}</td><td>${b}</td></tr>`).join("")}</table>`;
+  return `<div class="popup"><h3>${p.nom}</h3><div class="note">${nf(p.pop_2022)} habitants (2022)</div>`
+    + bloc("Consommation d'ENAF", [
+      ["2011-2021", ha(p.conso_1121_ha, 1)], ["2021-2025", ha(p.conso_2125_ha, 1)],
+      ["Évolution du rythme", pc(p.evol_rythme_pct, 0, true)], ["Enveloppe indicative utilisée", pc(p.part_enveloppe_pct)]])
+    + bloc("Artificialisation et PLUi", [
+      ["Part artificialisée 2022", pc(p.part_artif_2022_pct, 1)], ["Artificialisation nette 2019-2022", ha(p.artif_nette_1922_ha, 1)],
+      ["Zones AU / non artificialisées", `${ha(p.zone_AU_ha, 1)} / ${ha(p.au_non_artif_ha, 1)}`]])
+    + bloc("Densification", [
+      ["Parcelles divisées 2018-2026", nf(p.div_nb)], ["… sur terrain déjà artificialisé", pc(p.part_artif_pct)],
+      ["Gisements repérés", `${nf(p.gis_nb)} (${ha(p.gis_ha, 1)})`], ["Logements mobilisables à 10 ans", `≈ ${nf(p.gis_log_mob)}`]])
+    + (p.tissu_dense ? `<div class="avert">Centre urbain dense : la méthode de repérage des gisements, pensée pour le tissu pavillonnaire, y est moins adaptée.</div>` : "")
+    + `</div>`;
+}
 
+let communes;
+const recherche = document.getElementById("recherche");
+Promise.all([charger("synthese"), charger("communes")]).then(([S, data]) => {
+  communesData = data;
+  bornes = seuils(actif.cle);
+  communes = L.geoJSON(data, {
+    style: styleCommune,
+    onEachFeature: (f, l) => {
+      l.bindPopup(() => fiche(f.properties), { maxWidth: 320 });
+      l.on({
+        mouseover: e => {
+          e.target.setStyle({ weight: 2.5, color: "#0b0b0b" });
+          const v = f.properties[actif.cle];
+          survol.getContainer().innerHTML = `<b>${f.properties.nom}</b> · ${actif.categ ? v : actif.fmt(v)}`;
+        },
+        mouseout: e => communes.resetStyle(e.target),
+      });
+    },
+  }).addTo(carte);
+  carte.fitBounds(communes.getBounds(), { padding: [10, 10] });
+  legende();
+
+  // recherche de commune
+  const parNom = {};
+  communes.eachLayer(l => { parNom[l.feature.properties.nom] = l; });
+  Object.keys(parNom).sort((a, b) => a.localeCompare(b, "fr")).forEach(n => recherche.add(new Option(n, n)));
+  recherche.addEventListener("change", () => {
+    const l = parNom[recherche.value];
+    if (l) {  // la fiche s'ouvre une fois le zoom terminé (sinon son recadrage interrompt l'animation)
+      carte.once("moveend", () => l.openPopup());
+      carte.fitBounds(l.getBounds(), { padding: [20, 20] });
+    }
+  });
+
+  // chiffres clés
+  const s1 = S["1"], s2 = S["2"], s3 = S["3"], s4 = S["4_metropole"], s4b = S["4b"];
+  document.getElementById("chiffres").innerHTML = [
+    [ha(s1.conso_1121_ha), "d'ENAF consommés de 2011 à 2021"],
+    [pc(s1.part_enveloppe * 100), "de l'enveloppe 2021-2031 déjà utilisés au 01/01/2025", true],
+    [ha(s2.artif_nette_ha), "d'artificialisation nette entre 2019 et 2022"],
+    [ha(s3.au_non_artif_ha), `de zones AU non artificialisées, pour ${ha(s3.enveloppe_restante_ha)} d'enveloppe restante`, true],
+    [nf(s4b.nb_divisions), `parcelles divisées depuis 2018, dont ${pc(s4b.part_div_deja_artif * 100)} sur terrain déjà artificialisé`],
+    [`≈ ${nf(s4.logements_mobilisables)}`, `logements mobilisables à 10 ans dans ${nf(s4.nb_gisements)} gisements`],
+  ].map(([v, t, a]) => `<div class="chiffre${a ? " alerte" : ""}"><b>${v}</b><span>${t}</span></div>`).join("");
+}).catch(e => { voyant.textContent = e.message; voyant.style.display = "block"; });
+
+// --- Couches détaillées (chargées à la demande, certaines à partir d'un zoom minimal) ---------------
 const VOC = { "Habitat / mixte": "#e5714a", "Habitat / mixte (2AU, fermée)": "#f3b49b",
               "Activités économiques": "#7b3fa0", "Loisirs et équipements": "#d4a03a" };
-const zonesAU = L.geoJSON(window.DATA_ZONES_AU, {
-  style: f => ({ fillColor: VOC[f.properties.vocation] || "#e5714a", fillOpacity: 0.9, color: "#0b0b0b", weight: 0.8 }),
-  onEachFeature: (f, l) => l.bindPopup(`<div class="popup"><h3>Zone ${f.properties.libelle}</h3>
-    <p>${f.properties.libelong}</p><table>
-    <tr><td>Vocation</td><td>${f.properties.vocation}</td></tr>
-    <tr><td>Surface</td><td>${ha(f.properties.surface_ha, 1)}</td></tr>
-    <tr><td>Non artificialisée (2022)</td><td>${ha(f.properties.non_artif_ha, 1)}</td></tr>
-    <tr><td>Terres agricoles RPG 2024</td><td>${ha(f.properties.rpg_ha, 1)}</td></tr></table>
-    ${f.properties.urlfic ? `<p><a href="${f.properties.urlfic}" target="_blank" rel="noopener">Règlement de la zone</a></p>` : ""}</div>`),
-}).addTo(carte);
-
-const flux = L.geoJSON(window.DATA_FLUX, {
-  style: f => {
-    const c = f.properties.type_flux === "Artificialisation" ? "#b8262b" : "#159a6b";
-    return { fillColor: c, color: c, fillOpacity: 0.9, weight: 1.5 };
-  },
-  onEachFeature: (f, l) => l.bindTooltip(`${f.properties.type_flux} · ${ha(f.properties.surface_ha, 2)}<br>
-    ${f.properties.cs_2019} ${f.properties.us_2019} → ${f.properties.cs_2022} ${f.properties.us_2022}`),
-});
-
 const TYPES = { "Dent creuse": "#b8262b", "Grand tènement": "#6e1414", "Division parcellaire": "#f0a04b" };
-const gisements = L.geoJSON(window.DATA_GISEMENTS, {
-  style: f => ({ fillColor: TYPES[f.properties.type_gisement], fillOpacity: 0.95, color: "#fff", weight: 0.5 }),
-  onEachFeature: (f, l) => l.bindPopup(`<div class="popup"><h3>${f.properties.type_gisement}</h3><table>
-    <tr><td>Commune</td><td>${f.properties.commune}</td></tr>
-    <tr><td>Parcelle</td><td>${f.properties.idu}</td></tr>
-    <tr><td>Zone PLUi</td><td>${f.properties.zone_plui}</td></tr>
-    <tr><td>Surface libre</td><td>${nf(f.properties.surface_libre_m2)} m²</td></tr>
-    <tr><td>Logements (potentiel brut)</td><td>${f.properties.logements_bruts}</td></tr></table>
-    ${f.properties.vigilance ? `<p><b>Vigilance :</b> ${f.properties.vigilance}</p>` : ""}</div>`),
+const CAT_DIV = { "U habitat": "#e5714a", "U autre": "#7b3fa0", "AU": "#d4a03a", "A ou N": "#1f6f3f" };
+const FLUX = { "Artificialisation": "#b8262b", "Désartificialisation": "#159a6b" };
+const pastilles = o => Object.entries(o).map(([k, c]) => `<span><i style="background:${c}"></i>${k}</span>`).join("");
+const tableau = lignes => `<table>${lignes.map(([a, b]) => `<tr><td>${a}</td><td>${b}</td></tr>`).join("")}</table>`;
+
+const COUCHES = [
+  { nom: "zones_au", lib: "Zones à urbaniser (AU) du PLUi", legende: VOC, coche: true,
+    style: f => ({ fillColor: VOC[f.properties.vocation] || "#e5714a", fillOpacity: 0.9, color: "#0b0b0b", weight: 0.8 }),
+    popup: p => `<div class="popup"><h3>Zone ${p.libelle}</h3><div class="note">${p.libelong}</div>${tableau([
+      ["Vocation", p.vocation], ["Surface", ha(p.surface_ha, 1)], ["Non artificialisée (2022)", ha(p.non_artif_ha, 1)],
+      ["Terres agricoles RPG 2024", ha(p.rpg_ha, 1)]])}${p.urlfic ? `<p><a href="${p.urlfic}" target="_blank" rel="noopener">Règlement de la zone</a></p>` : ""}</div>` },
+  { nom: "flux", lib: "Artificialisation 2019-2022 (OCS GE)", legende: FLUX,
+    style: f => { const c = FLUX[f.properties.type_flux]; return { fillColor: c, color: c, fillOpacity: 0.9, weight: 1.5 }; },
+    popup: p => `<div class="popup"><h3>${p.type_flux}</h3>${tableau([["Surface", ha(p.surface_ha, 2)],
+      ["En 2019", `${p.cs_2019} · ${p.us_2019}`], ["En 2022", `${p.cs_2022} · ${p.us_2022}`]])}</div>` },
+  { nom: "divisions", lib: "Parcelles divisées 2018-2026", legende: CAT_DIV, zoomMin: ZOOM_DETAIL,
+    style: f => { const c = CAT_DIV[f.properties.categorie]; return { fillColor: c, color: c, fillOpacity: 0.75, weight: 0.8 }; },
+    popup: p => `<div class="popup"><h3>Parcelle divisée</h3>${tableau([["Commune", p.commune], ["Parcelle (2018)", p.id_mere],
+      ["Année", p.annee ?? "—"], ["Nombre de lots", p.nb_lots], ["Zone du PLUi", p.categorie], ["État du sol en 2019", p.etat_sol_2019],
+      ["Surface", `${nf(p.surface_m2)} m²`]])}</div>` },
+  { nom: "gisements", lib: "Gisements de densification", legende: TYPES, zoomMin: ZOOM_DETAIL,
+    style: f => ({ fillColor: TYPES[f.properties.type_gisement], fillOpacity: 0.95, color: "#fff", weight: 0.5 }),
+    popup: p => `<div class="popup"><h3>${p.type_gisement}</h3>${tableau([["Commune", p.commune], ["Parcelle", p.idu],
+      ["Zone PLUi", p.zone_plui], ["Surface libre", `${nf(p.surface_libre_m2)} m²`], ["Logements (potentiel brut)", p.logements_bruts]])}
+      ${p.vigilance ? `<div class="avert"><b>Vigilance :</b> ${p.vigilance}</div>` : ""}</div>` },
+];
+
+const blocCouches = document.getElementById("couches");
+COUCHES.forEach(c => {
+  const d = document.createElement("div");
+  d.className = "couche";
+  d.innerHTML = `<label><input type="checkbox" ${c.coche ? "checked" : ""}> ${c.lib}</label>
+    <div class="detail">${pastilles(c.legende)}</div><div class="etat"></div>`;
+  blocCouches.appendChild(d);
+  c.case = d.querySelector("input");
+  c.etat = d.querySelector(".etat");
+  c.case.addEventListener("change", () => majCouche(c));
+  if (c.coche) majCouche(c);
 });
 
-const lier = (id, couche) => document.getElementById(id).addEventListener("change", e =>
-  e.target.checked ? couche.addTo(carte) : carte.removeLayer(couche));
-lier("c-au", zonesAU); lier("c-flux", flux); lier("c-gis", gisements);
-document.getElementById("c-gis").addEventListener("change", e => {
-  if (e.target.checked) carte.fitBounds(gisements.getBounds(), { padding: [20, 20] });
+async function majCouche(c) {
+  const voulue = c.case.checked;
+  const assezPres = !c.zoomMin || carte.getZoom() >= c.zoomMin;
+  c.etat.textContent = voulue && !assezPres ? `Visible à partir du zoom ${c.zoomMin} : rapprochez-vous ou choisissez une commune.` : "";
+  if (voulue && assezPres) {
+    if (!c.couche) {
+      c.etat.textContent = "Chargement…";
+      const data = await charger(c.nom);
+      c.couche = L.geoJSON(data, {
+        style: c.style,
+        onEachFeature: (f, l) => l.bindPopup(() => c.popup(f.properties), { maxWidth: 320 }),
+      });
+      c.n = data.features.length;
+    }
+    c.etat.textContent = `${nf(c.n)} objets`;
+    if (c.case.checked && !carte.hasLayer(c.couche)) c.couche.addTo(carte);
+  } else if (c.couche && carte.hasLayer(c.couche)) {
+    carte.removeLayer(c.couche);
+  }
+}
+carte.on("zoomend", () => {
+  if (communes) communes.setStyle(styleCommune);
+  COUCHES.filter(c => c.zoomMin).forEach(majCouche);
 });
-L.control.scale({ imperial: false, position: "bottomleft" }).addTo(carte);
-legende();
 </script>
 </body>
 </html>

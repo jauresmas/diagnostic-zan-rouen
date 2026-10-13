@@ -379,6 +379,68 @@ def atlas_divisions(projet, couverture, couches_leg, emprise_metropole):
     return lay
 
 
+INDICATEURS_GISEMENTS = """<div style="font-family:'Segoe UI';font-size:8.5pt;color:#1f1f1f;line-height:1.35">
+<b style="color:#184f95">POTENTIEL DANS LES ZONES U À DOMINANTE HABITAT</b><br>
+Terrains repérés : <b>[% format_number("gis_nb", 0) %]</b> ([% format_number("gis_ha", 1) %] ha)<br>
+Logements mobilisables à 10 ans : <b>≈ [% format_number("gis_log_mob", 0) %]</b><br>
+Potentiel brut : [% format_number("gis_log_bruts", 0) %] logements<br>
+Dents creuses : [% format_number("gis_nb_dc", 0) %] · divisions possibles : [% format_number("gis_nb_div", 0) %]
+· grands tènements : [% format_number("gis_nb_gt", 0) %]<br>
+[% CASE WHEN "tissu_dense" = 1 THEN '<i>Centre urbain dense : résultat à interpréter avec prudence.</i>' ELSE '' END %]
+</div>"""
+
+
+def atlas_gisements(projet, couverture, couches_leg, emprise_metropole):
+    """Atlas séparé : une page par commune ayant au moins un gisement de densification."""
+    lay = QgsPrintLayout(projet)
+    lay.initializeDefaults()
+    lay.setName("Atlas des gisements de densification")
+    lay.pageCollection().page(0).setPageSize("A4", QgsLayoutItemPage.Landscape)
+    rectangle(lay, 0, 0, 297, 18, BLEU)
+    texte(lay, '[% "nom" %]', 8, 3, 180, 12, 18, "#ffffff", gras=True)
+    texte(lay, 'Gisements de densification · INSEE [% "code_insee" %]', 190, 6, 100, 8, 9, "#dce8f6")
+    m = carte(lay, "Gisements de densification", emprise_metropole, 8, 23, 180, 170)
+    m.setAtlasDriven(True)
+    m.setAtlasScalingMode(QgsLayoutItemMap.Auto)
+    m.setAtlasMargin(0.10)
+    habillage(lay, m, 11, 185, 176, 26, 2)
+    loc = carte(lay, "Localisation", emprise_metropole, 194, 23, 95, 62)
+    apercu = QgsLayoutItemMapOverview("Emprise", loc)
+    apercu.setLinkedMap(m)
+    apercu.setFrameSymbol(remplissage("184,38,43,60", "#b8262b", 0.5))
+    loc.overviews().addOverview(apercu)
+    texte(lay, INDICATEURS_GISEMENTS, 194, 90, 95, 48, html=True)
+    leg = legende(lay, m, couches_leg, 194, 140, titre="")
+    leg.setColumnCount(2)
+    leg.setSplitLayer(True)
+    for style, taille in ((QgsLegendStyle.Subgroup, 7.5), (QgsLegendStyle.SymbolLabel, 7)):
+        police = QFont("Segoe UI")
+        police.setBold(style == QgsLegendStyle.Subgroup)
+        police.setPointSizeF(taille)
+        leg.setStyleFont(style, police)
+    leg.setSymbolHeight(3)
+    leg.setSymbolWidth(5)
+    leg.adjustBoxSize()
+    texte(lay, "Repérage automatisé sans visite de terrain : pente, accès, réseaux, servitudes et volonté des "
+               "propriétaires restent à vérifier.", 194, 184, 95, 10, 7, "#52514e")
+    texte(lay, "Sources : DGFiP, cadastre Etalab (01/09/2026) ; IGN BD TOPO, OCS GE 2022, ADMIN EXPRESS ; "
+               "Géoportail de l'Urbanisme (PLUi 04/05/2026).", 8, 199, 200, 6, 7, "#52514e")
+    texte(lay, f"{AUTEUR} · page [% @atlas_featurenumber %] / [% @atlas_totalfeatures %]",
+          230, 199, 60, 6, 7, "#52514e")
+    atlas = lay.atlas()
+    atlas.setCoverageLayer(couverture)
+    atlas.setEnabled(True)
+    atlas.setHideCoverage(False)
+    atlas.setFilterFeatures(True)
+    atlas.setFilterExpression('"gis_nb" > 0')
+    atlas.setPageNameExpression('"nom"')
+    atlas.setFilenameExpression("'gisements_' || \"code_insee\" || '_' || \"nom\"")
+    atlas.setSortFeatures(True)
+    atlas.setSortExpression('"nom"')
+    projet.layoutManager().addLayout(lay)
+    return lay
+
+
 def theme(projet, nom, couches):
     rec = QgsMapThemeCollection.MapThemeRecord()
     rec.setLayerRecords([QgsMapThemeCollection.MapThemeLayerRecord(lyr) for lyr in couches])
@@ -431,7 +493,8 @@ def construire():
     groupes = [
         ("Habillage atlas", [(masque, False)]),
         ("Divisions parcellaires 2018-2026", [(lots, False), (div, False)]),
-        ("Densification (Isneauville, Bois-Guillaume)", [(gis, False), (cont, False), (bati, False), (parc, False)]),
+        ("Densification (gisements : 71 communes ; bâti et cadastre : communes test)",
+         [(gis, False), (cont, False), (bati, False), (parc, False)]),
         ("PLUi", [(au, True), (zon, False)]),
         ("Diagnostic ZAN", [(perim, True), (cercles, True), (destinations, False), (eau, True),
                             (limites, True), (flux, False), (rythme, False)]),
@@ -451,6 +514,7 @@ def construire():
     theme(projet, "Atlas communal", [masque, gis, au, flux, zon, eau, territoire])
     theme(projet, "Localisation", [perim, limites, territoire])
     theme(projet, "Divisions parcellaires", [masque, lots, div, eau, territoire])
+    theme(projet, "Gisements de densification", [masque, gis, au, eau, territoire])
 
     met = perim.extent()
     met.grow(1500)
@@ -492,6 +556,7 @@ def construire():
                "DGFiP/IGN Parcellaire Express ; IGN BD TOPO, OCS GE 2022 ; Géoportail de l'Urbanisme", km=1)
     atlas_a4(projet, limites, [zon, flux, gis], met)
     atlas_divisions(projet, limites, [div, lots], met)
+    atlas_gisements(projet, limites, [gis, au], met)
 
     # modèles du modeleur graphique, intégrés au projet
     modeles = RACINE / "scripts" / "08_modeles_traitement.py"

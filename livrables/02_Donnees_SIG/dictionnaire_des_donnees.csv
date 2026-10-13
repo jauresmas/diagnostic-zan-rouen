@@ -63,6 +63,15 @@ communes_indicateurs;div_lots;int64;Lots créés par division 2018-2026
 communes_indicateurs;div_u_hab;int64;Parcelles divisées en zone U à dominante habitat
 communes_indicateurs;part_artif_pct;float64;Part des divisions portant sur un terrain déjà artificialisé en 2019 (%)
 communes_indicateurs;div_100ha_u;float64;Divisions pour 100 ha de zone U
+communes_indicateurs;gis_nb;int64;Gisements de densification repérés (nombre)
+communes_indicateurs;gis_ha;float64;Surface des gisements (ha)
+communes_indicateurs;gis_log_bruts;int64;Potentiel brut de logements des gisements
+communes_indicateurs;gis_log_mob;float64;Logements mobilisables à 10 ans
+communes_indicateurs;gis_nb_dc;int64;Dents creuses
+communes_indicateurs;gis_nb_div;int64;Divisions parcellaires possibles
+communes_indicateurs;gis_nb_gt;int64;Grands tènements
+communes_indicateurs;densite_hab_ha;float64;Densité de population 2022 (hab./ha)
+communes_indicateurs;tissu_dense;bool;Centre urbain dense (1) : méthode de densification moins adaptée
 communes_centroides;code_insee;object;Code INSEE de la commune
 communes_centroides;nom;object;Nom de la commune
 communes_centroides;conso_1121_ha;float64;Consommation d'ENAF 2011-2021, toutes destinations (ha)
@@ -126,6 +135,15 @@ communes_centroides;div_lots;int64;Lots créés par division 2018-2026
 communes_centroides;div_u_hab;int64;Parcelles divisées en zone U à dominante habitat
 communes_centroides;part_artif_pct;float64;Part des divisions portant sur un terrain déjà artificialisé en 2019 (%)
 communes_centroides;div_100ha_u;float64;Divisions pour 100 ha de zone U
+communes_centroides;gis_nb;int64;Gisements de densification repérés (nombre)
+communes_centroides;gis_ha;float64;Surface des gisements (ha)
+communes_centroides;gis_log_bruts;int64;Potentiel brut de logements des gisements
+communes_centroides;gis_log_mob;float64;Logements mobilisables à 10 ans
+communes_centroides;gis_nb_dc;int64;Dents creuses
+communes_centroides;gis_nb_div;int64;Divisions parcellaires possibles
+communes_centroides;gis_nb_gt;int64;Grands tènements
+communes_centroides;densite_hab_ha;float64;Densité de population 2022 (hab./ha)
+communes_centroides;tissu_dense;bool;Centre urbain dense (1) : méthode de densification moins adaptée
 plui_zonage_qualifie;libelle;object;Code de la zone du PLUi
 plui_zonage_qualifie;libelong;object;Libellé long de la zone
 plui_zonage_qualifie;typezone;object;Type de zone CNIG (U, AUc, AUs, A, N)

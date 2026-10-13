@@ -21,7 +21,7 @@ Toutes les données sont ouvertes. Le travail est livré sous deux formes compl�
 | Part de l'enveloppe indicative 2021-2031 utilisée au 1er janvier 2025 | **56 %**, après 4 années sur 10 |
 | Artificialisation nette 2019-2022 (OCS GE) | **172 ha** |
 | Zones à urbaniser (AU) du PLUi encore non artificialisées | **575 ha**, soit 3,9 fois l'enveloppe restante (147 ha) |
-| Gisements de densification (Isneauville et Bois-Guillaume) | **366 terrains, 58 ha**, environ 347 logements à 10 ans |
+| Gisements de densification (71 communes) | **6 479 terrains, 1 333 ha** dans l'enveloppe urbaine, environ **6 285 logements** mobilisables à 10 ans |
 | Divisions parcellaires observées 2018-2026 (cadastre) | **4 199 parcelles divisées**, 10 505 lots créés ; **82 %** sur des terrains déjà artificialisés |
 
 ## Les cinq étapes
@@ -31,7 +31,7 @@ Toutes les données sont ouvertes. Le travail est livré sous deux formes compl�
 | 1 | Combien d'ENAF ont été consommés depuis 2011, où et pour quoi ? Où en est la trajectoire −50 % ? | [`01_consommation_enaf.py`](scripts/01_consommation_enaf.py) | C01, C02, G01 à G03 |
 | 2 | Comment l'occupation du sol a-t-elle évolué entre 2019 et 2022 (artificialisation au sens du décret 2023-1096) ? | [`02_evolution_ocsge.py`](scripts/02_evolution_ocsge.py) | C03, C04, G04 |
 | 3 | Le réservoir foncier du PLUi (zones AU) est-il compatible avec l'enveloppe restante ? | [`03_plui_occupation.py`](scripts/03_plui_occupation.py) | C05, C06, G05 |
-| 4 | Quel potentiel de densification existe dans les zones urbaines déjà constituées ? | [`04_gisements_densification.py`](scripts/04_gisements_densification.py) | C07, C08 |
+| 4 | Quel potentiel de densification existe dans les zones urbaines déjà constituées ? | [`04_gisements_densification.py`](scripts/04_gisements_densification.py) | C07, C08, C10, atlas des gisements |
 | 4 bis | Combien de parcelles ont réellement été divisées depuis 2018, où, et sur quels terrains ? | [`04b_divisions_parcellaires.py`](scripts/04b_divisions_parcellaires.py) | C09, G06, atlas des divisions |
 | 5 | Automatiser, mettre à jour chaque année, transposer à un autre territoire | [`run_all.py`](scripts/run_all.py), [`config.py`](scripts/config.py) | toutes |
 
@@ -46,12 +46,13 @@ Toutes les données sont ouvertes. Le travail est livré sous deux formes compl�
 |---|---|
 | `01_Documents/` | Bordereau de livraison, note méthodologique (environ 15 pages), fiches tutoriel pour les agents |
 | `02_Donnees_SIG/` | GeoPackage (QGIS), géodatabase fichier (ArcGIS Pro), projet QGIS (mises en page, atlas, modèles), modèles `.model3`, dictionnaire des données |
-| `03_Planches_cartographiques/` | 9 planches A3 au format PDF et PNG |
+| `03_Planches_cartographiques/` | 10 planches A3 au format PDF et PNG |
 | `04_Graphiques/` | 6 graphiques d'analyse |
 | `05_Tableaux/` | Classeur Excel : synthèse, indicateurs par commune, zones AU, gisements, matrice de transitions |
 | `06_Atlas_communal/` | Atlas PDF avec une page par commune (71 communes) |
 | `07_Atlas_divisions/` | Atlas séparé des divisions parcellaires 2018-2026 (65 communes ayant au moins 5 divisions) |
-| `docs/` | Carte web interactive (Leaflet), publiée avec GitHub Pages |
+| `08_Atlas_gisements/` | Atlas séparé des gisements de densification (71 communes) |
+| `docs/` | Carte web interactive (Leaflet) : indicateurs par commune, recherche de commune, couches détaillées chargées à la demande (zones AU, artificialisation, divisions, gisements), publiée avec GitHub Pages |
 
 ## Reproduire le diagnostic
 
@@ -88,7 +89,7 @@ Le projet et les modèles se reconstruisent avec [`scripts/07_projet_qgis.py`](s
 - **Consommation d'ENAF** : flux annuels du Cerema (fichiers fonciers), ventilés par destination. L'enveloppe 2021-2031 est indicative : elle vaut 50 % de 2011-2021, avant territorialisation par le SRADDET et le SCoT.
 - **Artificialisation** : chaque polygone de l'OCS GE (couverture × usage) est classé selon la nomenclature du décret n° 2023-1096, sans les seuils de surface. Les flux viennent du produit différentiel 2019-2022 de l'IGN.
 - **PLUi** : les 3 241 zones du standard CNIG sont croisées avec l'OCS GE 2022 et le RPG 2024. La vocation des zones AU est déduite des codes de zone.
-- **Densification** : le calcul part des parcelles en zone U à dominante habitat. On retire le bâti BD TOPO avec un recul de 5 m et les prescriptions excluantes du PLUi (EBC, patrimoine paysager, cavités souterraines). On applique ensuite une ouverture morphologique (lot de 15 m × 15 m au minimum) et un accès d'au moins 4 m sur la voie. La programmation repose sur des hypothèses de densité et de rétention foncière.
+- **Densification** (71 communes, planches détaillées sur Isneauville et Bois-Guillaume) : le calcul part des parcelles du cadastre Etalab en zone U à dominante habitat. On retire le bâti BD TOPO avec un recul de 5 m et les prescriptions excluantes du PLUi (EBC, patrimoine paysager, cavités souterraines). On applique ensuite une ouverture morphologique (lot de 15 m × 15 m au minimum) et un accès d'au moins 4 m sur la voie. Les emprises de transport et de réseaux (voies ferrées, routes) sont exclues. La programmation applique une densité de 20 logements/ha et un taux de mobilisation à 10 ans ; pour les divisions, ce taux (12 %) est celui observé entre 2018 et 2026. Dans les centres denses, la méthode, pensée pour le tissu pavillonnaire, est signalée comme moins adaptée.
 - **Divisions parcellaires** : les déclarations préalables de division ne sont pas en open data. On compare donc deux millésimes du cadastre Etalab (janvier 2018 et septembre 2026) : une parcelle disparue et couverte à 90 % ou plus par au moins deux nouvelles parcelles est comptée comme divisée, et les sections remaniées sont exclues. Chaque division est qualifiée par la zone du PLUi et par l'état du sol en 2019 (OCS GE). Le taux de division observé des grandes parcelles en zone U habitat (10 à 12 % sur 10 ans) sert à calibrer le modèle de densification.
 - **Cartographie** : les valeurs absolues sont en cercles proportionnels et les rapports en aplats. Les couleurs suivent les conventions de l'urbanisme (CNIG, MOS) et ont été contrôlées pour les daltonismes.
 

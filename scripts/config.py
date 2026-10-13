@@ -66,10 +66,15 @@ GRAND_TENEMENT_M2 = 5000        # au-delà : relève d'une OAP plutôt que du di
 # Hypothèses de programmation (à ajuster selon le SCoT et les OAP)
 DENSITE_LOG_HA = 20             # logements / ha en densification diffuse périurbaine
 TAUX_MOBILISATION = {           # part mobilisable à 10 ans (rétention foncière)
-    "Dent creuse": 0.50,
-    "Division parcellaire": 0.20,
-    "Grand tènement": 0.70,
+    "Dent creuse": 0.50,            # hypothèse
+    "Division parcellaire": 0.12,   # observé : 10-12 % des grandes parcelles U habitat divisées
+                                    # en 10 ans (étape 4 bis, Isneauville et Bois-Guillaume)
+    "Grand tènement": 0.70,         # hypothèse
 }
+# Extension du repérage à toutes les communes (cartes détaillées C07/C08 : communes test)
+DENSIFICATION_METROPOLE = True
+SEUIL_TISSU_DENSE_HAB_HA = 20   # au-delà : centre urbain dense, méthode moins adaptée (avertissement)
+CADASTRE_GISEMENTS = "2026-09-01"  # millésime Etalab utilisé pour le repérage
 
 # Prescriptions du PLUi qui rendent un terrain non mobilisable
 PRESCRIPTIONS_EXCLUANTES = {
