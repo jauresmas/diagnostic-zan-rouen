@@ -98,7 +98,7 @@ def modele_bilan_secteur():
                     "Le tableau de sortie donne la somme (champ sum) par type de flux.",
         "secteur": "Polygone(s) du secteur : périmètre de projet, quartier, commune...",
         "flux": "Couche ocsge_flux_2019_2022 du GeoPackage livré (valeur par défaut).",
-        "ALG_CREATOR": "Jauresmas",
+        "ALG_CREATOR": "Jaurès DAA-HINGBANON",
     })
     return m
 
@@ -200,7 +200,7 @@ def modele_espaces_libres():
         "recul_bati": "Distance minimale entre un nouveau lot et le bâti existant.",
         "largeur_lot": "Côté du carré qui doit pouvoir s'inscrire dans l'espace libre.",
         "surface_min": "Surface en dessous de laquelle un espace libre n'est pas retenu.",
-        "ALG_CREATOR": "Jauresmas",
+        "ALG_CREATOR": "Jaurès DAA-HINGBANON",
     })
     return m
 

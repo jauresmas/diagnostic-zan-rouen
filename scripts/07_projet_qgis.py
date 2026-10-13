@@ -27,7 +27,7 @@ except NameError:  # exécution depuis la console QGIS
     RACINE = Path(globals().get("RACINE_PROJET", "."))
 DOSSIER = RACINE / "livrables" / "02_Donnees_SIG"
 GPKG = DOSSIER / "diagnostic_zan_rouen.gpkg"
-AUTEUR = "Jauresmas"
+AUTEUR = "Jaurès DAA-HINGBANON"
 MM = QgsUnitTypes.LayoutMillimeters
 BLEU = "#184f95"
 

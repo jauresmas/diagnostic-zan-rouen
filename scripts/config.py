@@ -82,4 +82,4 @@ PRESCRIPTIONS_EXCLUANTES = {
 }
 
 # --- Mise en page -------------------------------------------------------------
-AUTEUR = "Jauresmas"
+AUTEUR = "Jaurès DAA-HINGBANON"

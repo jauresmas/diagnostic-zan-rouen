@@ -100,4 +100,4 @@ Les données sont diffusées sous [Licence Ouverte 2.0](https://www.etalab.gouv.
 Ce projet personnel a été réalisé à titre de démonstration, à partir de données ouvertes. C'est une **étude indépendante** qui n'engage pas la Métropole Rouen Normandie.
 Le code est sous licence [MIT](LICENSE). Les données dérivées sont sous Licence Ouverte 2.0, avec mention des sources ci-dessus.
 
-Réalisation : Jauresmas · octobre 2026
+Réalisation : Jaurès DAA-HINGBANON · octobre 2026
