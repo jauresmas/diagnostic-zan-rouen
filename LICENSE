@@ -19,8 +19,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
----
-Données : les données dérivées (dossier livrables/ et docs/data/) sont issues de
-sources publiques (Cerema, IGN, Géoportail de l'Urbanisme, ASP, INSEE) diffusées
-sous Licence Ouverte Etalab 2.0. Toute réutilisation doit mentionner ces sources.
